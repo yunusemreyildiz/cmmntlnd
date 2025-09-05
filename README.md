@@ -1,4 +1,4 @@
-# 📱 App Review Monitor
+# 📱 CmmntLnd (CommentLand)
 
 App Store ve Google Play Store'daki uygulama yorumlarını otomatik olarak takip eden ve yeni yorumları Slack'e gönderen Python uygulaması.
 
@@ -26,15 +26,15 @@ App Store ve Google Play Store'daki uygulama yorumlarını otomatik olarak takip
 
 **Linux/macOS:**
 ```bash
-git clone https://github.com/yourusername/app-review-monitor.git
-cd app-review-monitor
+git clone https://github.com/yunusemreyildiz/cmmntlnd.git
+cd cmmntlnd
 ./install.sh
 ```
 
 **Windows:**
 ```cmd
-git clone https://github.com/yourusername/app-review-monitor.git
-cd app-review-monitor
+git clone https://github.com/yunusemreyildiz/cmmntlnd.git
+cd cmmntlnd
 install.bat
 ```
 
@@ -67,7 +67,7 @@ APP_STORE_APP_ID=1234567890
 APP_STORE_COUNTRY=all
 
 # Google Play Configuration
-GOOGLE_PLAY_APP_ID=com.yourcompany.yourapp
+GOOGLE_PLAY_APP_ID=com.whatsapp
 GOOGLE_PLAY_COUNTRY=all
 
 # Monitor Configuration
@@ -79,13 +79,13 @@ MAX_REVIEWS_PER_CHECK=10
 
 #### App Store App ID
 1. App Store'da uygulamanızı bulun
-2. URL'deki sayıyı kopyalayın: `https://apps.apple.com/app/id1234567890`
-3. `1234567890` kısmını kullanın
+2. URL'deki sayıyı kopyalayın: `https://apps.apple.com/app/whatsapp-messenger/id310633997`
+3. `310633997` kısmını kullanın (WhatsApp'ın App Store ID'si)
 
 #### Google Play App ID
 1. Google Play Store'da uygulamanızı bulun
-2. URL'deki paket adını kopyalayın: `https://play.google.com/store/apps/details?id=com.yourcompany.yourapp`
-3. `com.yourcompany.yourapp` kısmını kullanın
+2. URL'deki paket adını kopyalayın: `https://play.google.com/store/apps/details?id=com.whatsapp`
+3. `com.whatsapp` kısmını kullanın (WhatsApp'ın Google Play ID'si)
 
 ### Slack Webhook Nasıl Oluşturulur?
 
