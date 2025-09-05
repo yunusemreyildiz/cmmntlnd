@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Ayarlar - App Review Monitor{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="text-center mb-5">
+    <h1 class="apple-largetitle mb-3">Ayarlar</h1>
+    <p class="apple-title3 text-muted">App Store ve Google Play Store entegrasyonunu yapılandırın</p>
+</div>
+
+<form method="POST">
+    <!-- Google Play Store Section -->
+    <div class="apple-card mb-4">
+        <div class="apple-card-header">
+            <div class="d-flex align-items-center gap-3">
+                <div class="apple-icon apple-icon-success">
+                    <i class="fab fa-google-play"></i>
+                </div>
+                <div>
+                    <h3 class="apple-title3 mb-1">Google Play Store</h3>
+                    <p class="apple-footnote text-muted mb-0">Android uygulaması ayarları</p>
+                </div>
+            </div>
+        </div>
+        <div class="apple-card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label for="google_play_app_id" class="apple-label">App ID</label>
+                    <input type="text" class="apple-input" id="google_play_app_id" 
+                           name="google_play_app_id" 
+                           value="{{ config.get('GOOGLE_PLAY_APP_ID', '') }}"
+                           placeholder="com.pttem.epttavm">
+                    <div class="apple-help-text">Örnek: com.whatsapp, com.pttem.epttavm</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="google_play_country" class="apple-label">Ülke</label>
+                    <select class="apple-select" id="google_play_country" name="google_play_country">
+                        <option value="all" {{ 'selected' if config.get('GOOGLE_PLAY_COUNTRY') == 'all' else '' }}>🌍 Tüm Ülkeler</option>
+                        <option value="tr" {{ 'selected' if config.get('GOOGLE_PLAY_COUNTRY') == 'tr' else '' }}>🇹🇷 Türkiye</option>
+                        <option value="us" {{ 'selected' if config.get('GOOGLE_PLAY_COUNTRY') == 'us' else '' }}>🇺🇸 ABD</option>
+                        <option value="gb" {{ 'selected' if config.get('GOOGLE_PLAY_COUNTRY') == 'gb' else '' }}>🇬🇧 İngiltere</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Store Section -->
+    <div class="apple-card mb-4">
+        <div class="apple-card-header">
+            <div class="d-flex align-items-center gap-3">
+                <div class="apple-icon" style="background: var(--apple-gray);">
+                    <i class="fab fa-apple"></i>
+                </div>
+                <div>
+                    <h3 class="apple-title3 mb-1">App Store</h3>
+                    <p class="apple-footnote text-muted mb-0">iOS uygulaması ayarları</p>
+                </div>
+            </div>
+        </div>
+        <div class="apple-card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label for="app_store_app_id" class="apple-label">App ID</label>
+                    <input type="text" class="apple-input" id="app_store_app_id" 
+                           name="app_store_app_id" 
+                           value="{{ config.get('APP_STORE_APP_ID', '') }}"
+                           placeholder="1435788518">
+                    <div class="apple-help-text">Örnek: 310633997 (WhatsApp), 1435788518 (PttAVM)</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="app_store_country" class="apple-label">Ülke</label>
+                    <select class="apple-select" id="app_store_country" name="app_store_country">
+                        <option value="all" {{ 'selected' if config.get('APP_STORE_COUNTRY') == 'all' else '' }}>🌍 Tüm Ülkeler</option>
+                        <option value="tr" {{ 'selected' if config.get('APP_STORE_COUNTRY') == 'tr' else '' }}>🇹🇷 Türkiye</option>
+                        <option value="us" {{ 'selected' if config.get('APP_STORE_COUNTRY') == 'us' else '' }}>🇺🇸 ABD</option>
+                        <option value="gb" {{ 'selected' if config.get('APP_STORE_COUNTRY') == 'gb' else '' }}>🇬🇧 İngiltere</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slack Section -->
+    <div class="apple-card mb-4">
+        <div class="apple-card-header">
+            <div class="d-flex align-items-center gap-3">
+                <div class="apple-icon" style="background: var(--apple-indigo);">
+                    <i class="fab fa-slack"></i>
+                </div>
+                <div>
+                    <h3 class="apple-title3 mb-1">Slack Entegrasyonu</h3>
+                    <p class="apple-footnote text-muted mb-0">Bildirim ayarları</p>
+                </div>
+            </div>
+        </div>
+        <div class="apple-card-body">
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <label for="slack_webhook_url" class="apple-label">Webhook URL</label>
+                    <input type="url" class="apple-input" id="slack_webhook_url" 
+                           name="slack_webhook_url" 
+                           value="{{ config.get('SLACK_WEBHOOK_URL', '') }}"
+                           placeholder="https://hooks.slack.com/services/...">
+                    <div class="apple-help-text">Slack'ten aldığınız webhook URL'si</div>
+                </div>
+                <div class="col-md-4">
+                    <label for="slack_channel" class="apple-label">Kanal</label>
+                    <input type="text" class="apple-input" id="slack_channel" 
+                           name="slack_channel" 
+                           value="{{ config.get('SLACK_CHANNEL', '#app-reviews') }}"
+                           placeholder="#app-reviews">
+                    <div class="apple-help-text">Mesaj kanalı</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monitoring Settings Section -->
+    <div class="apple-card mb-4">
+        <div class="apple-card-header">
+            <div class="d-flex align-items-center gap-3">
+                <div class="apple-icon apple-icon-warning">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                    <h3 class="apple-title3 mb-1">İzleme Ayarları</h3>
+                    <p class="apple-footnote text-muted mb-0">Kontrol sıklığı ve limitler</p>
+                </div>
+            </div>
+        </div>
+        <div class="apple-card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label for="check_interval" class="apple-label">Kontrol Aralığı</label>
+                    <select class="apple-select" id="check_interval" name="check_interval">
+                        <option value="5" {{ 'selected' if config.get('CHECK_INTERVAL_MINUTES') == '5' else '' }}>⚡ 5 dakika</option>
+                        <option value="15" {{ 'selected' if config.get('CHECK_INTERVAL_MINUTES') == '15' else '' }}>🕒 15 dakika</option>
+                        <option value="30" {{ 'selected' if config.get('CHECK_INTERVAL_MINUTES') == '30' else '' }}>⏰ 30 dakika</option>
+                        <option value="60" {{ 'selected' if config.get('CHECK_INTERVAL_MINUTES') == '60' else '' }}>🕐 1 saat</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="max_reviews" class="apple-label">Maksimum Yorum Sayısı</label>
+                    <select class="apple-select" id="max_reviews" name="max_reviews">
+                        <option value="5" {{ 'selected' if config.get('MAX_REVIEWS_PER_CHECK') == '5' else '' }}>📝 5 yorum</option>
+                        <option value="10" {{ 'selected' if config.get('MAX_REVIEWS_PER_CHECK') == '10' else '' }}>📄 10 yorum</option>
+                        <option value="20" {{ 'selected' if config.get('MAX_REVIEWS_PER_CHECK') == '20' else '' }}>📋 20 yorum</option>
+                        <option value="50" {{ 'selected' if config.get('MAX_REVIEWS_PER_CHECK') == '50' else '' }}>📚 50 yorum</option>
+                    </select>
+                    <div class="apple-help-text">Her kontrolde çekilecek maksimum yorum sayısı</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="apple-card">
+        <div class="apple-card-body">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex gap-3 flex-wrap">
+                    <button type="button" class="apple-button apple-button-secondary" onclick="testSlack()">
+                        <i class="fas fa-paper-plane"></i>
+                        Slack Test Et
+                    </button>
+                    <a href="{{ url_for('index') }}" class="apple-button apple-button-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Ana Sayfa
+                    </a>
+                </div>
+                <button type="submit" class="apple-button apple-button-success apple-button-large">
+                    <i class="fas fa-save"></i>
+                    Ayarları Kaydet
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- App ID Help Section -->
+<div class="apple-card mt-4">
+    <div class="apple-card-header">
+        <h3 class="apple-title3 mb-0">📱 App ID Nasıl Bulunur?</h3>
+    </div>
+    <div class="apple-card-body">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="apple-alert" style="margin-bottom: 0;">
+                    <h4 class="apple-headline mb-3">🤖 Google Play Store</h4>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="apple-status-indicator apple-status-info" style="min-width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 600;">1</span>
+                            <span class="apple-callout">Uygulamanın Google Play sayfasına gidin</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="apple-status-indicator apple-status-info" style="min-width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 600;">2</span>
+                            <span class="apple-callout">URL'den <span class="apple-code">id=</span> sonrasını kopyalayın</span>
+                        </div>
+                        <div class="mt-2">
+                            <div class="apple-footnote text-muted mb-1">Örnek URL:</div>
+                            <div class="apple-code d-block text-break">play.google.com/store/apps/details?id=<strong>com.pttem.epttavm</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="apple-alert" style="margin-bottom: 0;">
+                    <h4 class="apple-headline mb-3">🍎 App Store</h4>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="apple-status-indicator apple-status-info" style="min-width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 600;">1</span>
+                            <span class="apple-callout">Uygulamanın App Store sayfasına gidin</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="apple-status-indicator apple-status-info" style="min-width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 600;">2</span>
+                            <span class="apple-callout">URL'den <span class="apple-code">id</span> sonrasındaki sayıları kopyalayın</span>
+                        </div>
+                        <div class="mt-2">
+                            <div class="apple-footnote text-muted mb-1">Örnek URL:</div>
+                            <div class="apple-code d-block text-break">apps.apple.com/tr/app/pttavm/id<strong>1435788518</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function testSlack() {
+    const webhookUrl = document.getElementById('slack_webhook_url').value;
+    
+    if (!webhookUrl) {
+        alert('Lütfen önce Webhook URL\'sini girin.');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('webhook_url', webhookUrl);
+    
+    fetch('/test_slack', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ Slack test mesajı başarıyla gönderildi!');
+        } else {
+            alert('❌ Slack test mesajı gönderilemedi: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('❌ Hata: ' + error.message);
+    });
+}
+</script>
+{% endblock %}
