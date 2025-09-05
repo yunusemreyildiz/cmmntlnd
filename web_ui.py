@@ -177,14 +177,14 @@ def test_slack():
         return jsonify({'success': False, 'message': 'Geçersiz Slack Webhook URL formatı'})
     
     test_message = {
-        'text': '🧪 App Review Monitor - Test Mesajı',
-        'username': 'App Review Monitor',
+        'text': '🧪 CmmntLnd - Test Mesajı',
+        'username': 'CmmntLnd Monitor',
         'icon_emoji': ':star:',
         'attachments': [{
             'color': 'good',
             'fields': [{
-                'title': 'Test Başarılı',
-                'value': 'Slack entegrasyonu çalışıyor!',
+                'title': '✅ Test Başarılı',
+                'value': 'Slack entegrasyonu çalışıyor! WhatsApp, Facebook gibi uygulamalarınızın yorumları buraya gelecek.',
                 'short': False
             }]
         }]
