@@ -1,0 +1,19 @@
+# App Review Monitor Dependencies
+# Core dependencies
+requests>=2.31.0
+python-dotenv>=1.0.0
+python-dateutil>=2.8.2
+
+# Web UI
+flask>=2.3.3
+werkzeug>=2.3.7
+
+# App Store & Google Play scraping
+google-play-scraper>=1.2.2
+app-store-scraper>=0.3.3
+
+# Slack integration
+slack-sdk>=3.23.0
+
+# Optional: For better performance
+gunicorn>=21.2.0

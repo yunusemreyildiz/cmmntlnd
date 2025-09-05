@@ -1,0 +1,17 @@
+# Bu dosyayı .env olarak kopyalayın ve değerleri doldurun
+
+# Slack Configuration
+SLACK_WEBHOOK_URL=your_slack_webhook_url_here
+SLACK_CHANNEL=#app-reviews
+
+# App Store Configuration
+APP_STORE_APP_ID=your_app_store_app_id
+APP_STORE_COUNTRY=all
+
+# Google Play Store Configuration
+GOOGLE_PLAY_APP_ID=com.yourcompany.yourapp
+GOOGLE_PLAY_COUNTRY=all
+
+# Monitoring Configuration
+CHECK_INTERVAL_MINUTES=5
+MAX_REVIEWS_PER_CHECK=10
