@@ -1,242 +1,110 @@
-{% extends "base.html" %}
+{% extends "base_tw.html" %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="text-center mb-5">
-    <h1 class="apple-largetitle mb-3">App Review Monitor</h1>
-    <p class="apple-title3 text-muted">Her iki platformdan gelen yorumları anlık izleyin</p>
+<!-- Hero -->
+<section class="text-center mb-8">
+  <h1 class="text-4xl font-bold tracking-tight mb-2">CmmntLnd</h1>
+  <p class="text-gray-400">Google Play & App Store yorumlarını anlık takip edin</p>
+</section>
+
+<!-- Monitor Status -->
+<div class="grid lg:grid-cols-3 gap-6 mb-8">
+  <div class="col-span-3 bg-gray-800 rounded-xl shadow-md p-6 flex flex-col md:flex-row items-center justify-between">
+    <div class="flex items-center gap-4">
+      <div class="h-14 w-14 flex items-center justify-center rounded-full {{ 'bg-green-600' if monitor_running else 'bg-red-600' }} text-white">
+        <i class="fa-solid fa-{{ 'play' if monitor_running else 'pause' }}"></i>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold">Monitor Durumu</h3>
+        <span class="inline-flex items-center gap-2 text-sm {{ 'text-green-400' if monitor_running else 'text-red-400' }}">
+          <i class="fa-solid fa-circle text-xs"></i>
+          {{ 'Çalışıyor' if monitor_running else 'Durduruldu' }}
+        </span>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-4 md:mt-0">
+      {% if not monitor_running %}
+      <button onclick="startMonitor()" class="inline-flex items-center gap-2 px-5 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white">
+        <i class="fa-solid fa-play"></i> Başlat
+      </button>
+      {% else %}
+      <button onclick="stopMonitor()" class="inline-flex items-center gap-2 px-5 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white">
+        <i class="fa-solid fa-stop"></i> Durdur
+      </button>
+      {% endif %}
+      <a href="{{ url_for('settings') }}" class="inline-flex items-center gap-2 px-5 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white">
+        <i class="fa-solid fa-cog"></i> Ayarlar
+      </a>
+    </div>
+  </div>
 </div>
 
-<!-- Status Dashboard -->
-<div class="apple-card mb-4">
-    <div class="apple-card-header">
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-3">
-                <div class="apple-icon apple-icon-{{ 'success' if monitor_running else 'error' }}">
-                    <i class="fas fa-{{ 'play' if monitor_running else 'pause' }}"></i>
-                </div>
-                <div>
-                    <h3 class="apple-title3 mb-1">Monitor Durumu</h3>
-                    <div class="apple-status-indicator apple-status-{{ 'success' if monitor_running else 'error' }}">
-                        <i class="fas fa-circle" style="font-size: 8px;"></i>
-                        {{ 'Çalışıyor' if monitor_running else 'Durduruldu' }}
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex gap-3">
-                {% if not monitor_running %}
-                    <button class="apple-button apple-button-success apple-button-large" onclick="startMonitor()">
-                        <i class="fas fa-play"></i>
-                        Başlat
-                    </button>
-                {% else %}
-                    <button class="apple-button apple-button-destructive apple-button-large" onclick="stopMonitor()">
-                        <i class="fas fa-stop"></i>
-                        Durdur
-                    </button>
-                {% endif %}
-                <a href="{{ url_for('settings') }}" class="apple-button apple-button-large">
-                    <i class="fas fa-cog"></i>
-                    Ayarlar
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="apple-card-body">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="apple-card" style="margin-bottom: 0;">
-                    <div class="apple-card-body text-center">
-                        <div class="apple-icon apple-icon-success mb-3" style="margin: 0 auto;">
-                            <i class="fab fa-google-play"></i>
-                        </div>
-                        <h4 class="apple-headline mb-2">Google Play Store</h4>
-                        <p class="apple-footnote text-muted mb-3">Android uygulaması</p>
-                        <div class="apple-code d-block">{{ config.get('GOOGLE_PLAY_APP_ID', 'Ayarlanmamış') }}</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="apple-card" style="margin-bottom: 0;">
-                    <div class="apple-card-body text-center">
-                        <div class="apple-icon mb-3" style="margin: 0 auto; background: var(--apple-gray);">
-                            <i class="fab fa-apple"></i>
-                        </div>
-                        <h4 class="apple-headline mb-2">App Store</h4>
-                        <p class="apple-footnote text-muted mb-3">iOS uygulaması</p>
-                        <div class="apple-code d-block">{{ config.get('APP_STORE_APP_ID', 'Ayarlanmamış') }}</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="apple-card" style="margin-bottom: 0;">
-                    <div class="apple-card-body text-center">
-                        <div class="apple-icon apple-icon-info mb-3" style="margin: 0 auto; background: var(--apple-indigo);">
-                            <i class="fab fa-slack"></i>
-                        </div>
-                        <h4 class="apple-headline mb-2">Slack Kanalı</h4>
-                        <p class="apple-footnote text-muted mb-3">Bildirim kanalı</p>
-                        <div class="apple-code d-block">{{ config.get('SLACK_CHANNEL', '#app-reviews') }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- App info cards -->
+<div class="grid md:grid-cols-3 gap-6 mb-8">
+  <!-- Google Play -->
+  <div class="bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center text-center">
+    <i class="fab fa-google-play text-4xl text-green-500 mb-4"></i>
+    <h4 class="font-semibold mb-1">Google Play Store</h4>
+    <p class="text-sm text-gray-400 mb-3">Android uygulaması</p>
+    <code class="break-all bg-gray-900/50 px-2 py-1 rounded text-sm">{{ config.get('GOOGLE_PLAY_APP_ID', 'Ayarlanmamış') }}</code>
+  </div>
+  <!-- App Store -->
+  <div class="bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center text-center">
+    <i class="fab fa-apple text-4xl text-gray-300 mb-4"></i>
+    <h4 class="font-semibold mb-1">App Store</h4>
+    <p class="text-sm text-gray-400 mb-3">iOS uygulaması</p>
+    <code class="break-all bg-gray-900/50 px-2 py-1 rounded text-sm">{{ config.get('APP_STORE_APP_ID', 'Ayarlanmamış') }}</code>
+  </div>
+  <!-- Slack -->
+  <div class="bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center text-center">
+    <i class="fab fa-slack text-4xl text-indigo-400 mb-4"></i>
+    <h4 class="font-semibold mb-1">Slack Kanalı</h4>
+    <p class="text-sm text-gray-400 mb-3">Bildirim kanalı</p>
+    <code class="break-all bg-gray-900/50 px-2 py-1 rounded text-sm">{{ config.get('SLACK_CHANNEL', '#app-reviews') }}</code>
+  </div>
 </div>
 
-<!-- Two Column Layout -->
-<div class="row g-4">
-    <!-- Left Column: Logs -->
-    <div class="col-lg-8">
-        <div class="apple-card">
-            <div class="apple-card-header">
-                <h3 class="apple-title3 mb-0">Canlı Loglar</h3>
-            </div>
-            <div class="apple-card-body p-0">
-                <div class="apple-log-container">
-                    {% for log in logs %}
-                        <div class="apple-log-entry {{ log.level }}">
-                            <div class="d-flex align-items-start gap-3">
-                                <i class="fas fa-{{ 'info-circle' if log.level == 'info' else 'check-circle' if log.level == 'success' else 'exclamation-triangle' }} mt-1" style="font-size: 14px;"></i>
-                                <div class="flex-grow-1">
-                                    <div class="apple-caption1 text-muted mb-1">{{ log.timestamp }}</div>
-                                    <div class="apple-callout">{{ log.message }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                    
-                    {% if not logs %}
-                        <div class="text-center py-5">
-                            <div class="apple-icon mb-3" style="margin: 0 auto; background: var(--apple-fill-tertiary); color: var(--apple-text-tertiary);">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <h4 class="apple-headline text-muted mb-2">Henüz log kaydı yok</h4>
-                            <p class="apple-subheadline text-muted">Monitor'u başlattığınızda loglar burada görünecek</p>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+<!-- Logs and Quick guide -->
+<div class="grid lg:grid-cols-3 gap-6">
+  <!-- Logs -->
+  <div class="lg:col-span-2">
+    <div class="bg-gray-800 rounded-xl shadow">
+      <div class="border-b border-gray-700 px-6 py-4 flex items-center justify-between">
+        <h3 class="font-semibold">Canlı Loglar</h3>
+      </div>
+      <div class="p-4 h-96 overflow-y-auto space-y-3 text-sm" id="log-container">
+        {% for log in logs %}
+        <div class="px-4 py-2 rounded-md {{ 'border-l-4 border-green-500' if log.level=='success' else 'border-l-4 border-red-500' if log.level=='error' else 'border-l-4 border-blue-500' }} bg-gray-700/50">
+          <span class="text-gray-400 mr-2">{{ log.timestamp }}</span>{{ log.message }}
         </div>
+        {% endfor %}
+        {% if not logs %}
+        <div class="text-center text-gray-400">Henüz log yok. Monitor'u başlatın.</div>
+        {% endif %}
+      </div>
     </div>
-    
-    <!-- Right Column: Info Cards -->
-    <div class="col-lg-4">
-        <!-- Quick Start Guide -->
-        <div class="apple-card mb-4">
-            <div class="apple-card-header">
-                <h3 class="apple-title3 mb-0">Hızlı Başlangıç</h3>
-            </div>
-            <div class="apple-card-body">
-                <div class="row g-3">
-                    <div class="col-6 text-center">
-                        <div class="apple-icon apple-icon-info mb-3" style="margin: 0 auto; width: 48px; height: 48px; font-size: 20px;">
-                            <i class="fas fa-cog"></i>
-                        </div>
-                        <h5 class="apple-subheadline mb-1">Ayarlar</h5>
-                        <p class="apple-caption2 text-muted">App ID'leri ve webhook girin</p>
-                    </div>
-                    <div class="col-6 text-center">
-                        <div class="apple-icon apple-icon-warning mb-3" style="margin: 0 auto; width: 48px; height: 48px; font-size: 20px;">
-                            <i class="fas fa-paper-plane"></i>
-                        </div>
-                        <h5 class="apple-subheadline mb-1">Test</h5>
-                        <p class="apple-caption2 text-muted">Slack bağlantısını test edin</p>
-                    </div>
-                    <div class="col-6 text-center">
-                        <div class="apple-icon apple-icon-success mb-3" style="margin: 0 auto; width: 48px; height: 48px; font-size: 20px;">
-                            <i class="fas fa-play"></i>
-                        </div>
-                        <h5 class="apple-subheadline mb-1">Başlat</h5>
-                        <p class="apple-caption2 text-muted">Monitor'u çalıştırın</p>
-                    </div>
-                    <div class="col-6 text-center">
-                        <div class="apple-icon mb-3" style="margin: 0 auto; width: 48px; height: 48px; font-size: 20px; background: var(--apple-purple);">
-                            <i class="fas fa-eye"></i>
-                        </div>
-                        <h5 class="apple-subheadline mb-1">İzle</h5>
-                        <p class="apple-caption2 text-muted">Yorumları anlık takip edin</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Slack Setup Guide -->
-        <div class="apple-card">
-            <div class="apple-card-header">
-                <h3 class="apple-title3 mb-0">Slack Kurulumu</h3>
-            </div>
-            <div class="apple-card-body">
-                <div class="text-center mb-4">
-                    <div class="apple-icon mb-3" style="margin: 0 auto; background: var(--apple-indigo);">
-                        <i class="fab fa-slack"></i>
-                    </div>
-                    <h4 class="apple-headline mb-2">Webhook Nasıl Alınır?</h4>
-                </div>
-                
-                <div class="d-flex flex-column gap-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="apple-status-indicator apple-status-info" style="min-width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 600;">1</div>
-                        <span class="apple-callout">Slack kanalınıza gidin</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="apple-status-indicator apple-status-info" style="min-width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 600;">2</div>
-                        <span class="apple-callout">⚙️ Ayarlar → Integrations</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="apple-status-indicator apple-status-info" style="min-width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 600;">3</div>
-                        <span class="apple-callout">Incoming Webhooks ekleyin</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="apple-status-indicator apple-status-info" style="min-width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 600;">4</div>
-                        <span class="apple-callout">URL'yi kopyalayın</span>
-                    </div>
-                </div>
-                
-                <div class="apple-alert mt-4" style="margin-bottom: 0;">
-                    <h5 class="apple-subheadline mb-2">📱 Örnek App ID'ler</h5>
-                    <div class="d-flex flex-column gap-2">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="apple-footnote">Google Play:</span>
-                            <span class="apple-code">com.whatsapp</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="apple-footnote">App Store:</span>
-                            <span class="apple-code">310633997</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  </div>
+  <!-- Quick guide -->
+  <div class="space-y-6">
+    <div class="bg-gray-800 rounded-xl shadow p-6">
+      <h3 class="font-semibold mb-4">Hızlı Başlangıç</h3>
+      <ol class="list-decimal list-inside space-y-2 text-gray-300 text-sm">
+        <li>Ayarlar sayfasında App ID ve Slack webhook gir.</li>
+        <li>Slack bağlantısını test et.</li>
+        <li>Monitor'u başlat.</li>
+        <li>Yeni yorumları takip et!</li>
+      </ol>
     </div>
+  </div>
 </div>
 
+{% endblock %}
+
+{% block extra_scripts %}
 <script>
-function startMonitor() {
-    fetch('/start_monitor', {method: 'POST'})
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Hata: ' + data.message);
-            }
-        });
-}
-
-function stopMonitor() {
-    fetch('/stop_monitor', {method: 'POST'})
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Hata: ' + data.message);
-            }
-        });
-}
+function startMonitor(){fetch('/start_monitor',{method:'POST'}).then(r=>r.json()).then(d=>{d.success?location.reload():alert('Hata: '+d.message)});}
+function stopMonitor(){fetch('/stop_monitor',{method:'POST'}).then(r=>r.json()).then(d=>{d.success?location.reload():alert('Hata: '+d.message)});}
+// Auto refresh logs
+setInterval(()=>{fetch('/logs').then(r=>r.json()).then(logs=>{const c=document.getElementById('log-container');if(!c)return;c.innerHTML=logs.map(l=>`<div class='px-4 py-2 rounded-md ${l.level==='success'?'border-l-4 border-green-500':'error'?'border-l-4 border-red-500':'border-l-4 border-blue-500'} bg-gray-700/50'><span class='text-gray-400 mr-2'>${l.timestamp}</span>${l.message}</div>`).join('');c.scrollTop=c.scrollHeight;});},5000);
 </script>
 {% endblock %}
