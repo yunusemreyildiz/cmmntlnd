@@ -2,13 +2,40 @@
 
 App Store ve Google Play Store'daki uygulama yorumlarını otomatik olarak takip eden ve yeni yorumları Slack'e gönderen Python uygulaması.
 
+## 📸 Ekran Görüntüleri
+
+<div align="center">
+  <img src="assets/screenshots/dashboard.png" alt="Dashboard" width="800"/>
+  <p><em>Ana Dashboard - Monitor durumu ve platform bilgileri</em></p>
+</div>
+
+<div align="center">
+  <img src="assets/screenshots/settings.png" alt="Settings" width="800"/>
+  <p><em>Ayarlar Sayfası - App ID'leri ve Slack webhook konfigürasyonu</em></p>
+</div>
+
+### 📸 Ekran Görüntüleri Nasıl Alınır?
+
+Ekran görüntülerini almak için:
+
+```bash
+# Demo verileri oluştur
+python3 demo_screenshots.py
+
+# Web UI'yi başlat
+python3 web_ui.py
+
+# Tarayıcıda http://localhost:5000 adresine git
+# Ekran görüntülerini al ve assets/screenshots/ klasörüne kaydet
+```
+
 ## ✨ Özellikler
 
 - 🍎 **App Store** yorumlarını takip eder
 - 🤖 **Google Play Store** yorumlarını takip eder
 - 💬 **Slack** entegrasyonu ile anlık bildirimler
 - 🌐 **Web UI** ile kolay yapılandırma
-- 🎨 **Modern arayüz** (TailwindCSS + Flowbite, karanlık tema)
+- 🎨 **Modern arayüz** (Apple Design System benzeri)
 - ⏰ **Otomatik** periyodik kontrol
 - 🌍 **Çoklu ülke** desteği
 - 📊 **Detaylı loglar** ve izleme

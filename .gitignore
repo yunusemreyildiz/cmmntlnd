@@ -135,6 +135,11 @@ data/
 .env.local
 .env.*.local
 
+# Keep assets folder for screenshots
+!assets/
+!assets/screenshots/
+!assets/screenshots/*.png
+
 # IDE
 .vscode/
 .idea/
