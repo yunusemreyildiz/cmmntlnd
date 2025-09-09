@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}CmmntLnd{% endblock %}</title>
+
+    <!-- TailwindCSS (CDN dev; prod için derleyin) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <!-- Flowbite bileşenleri -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-gray-900 text-gray-100 font-sans">
+    <!-- Navbar -->
+    <nav class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-comments text-emerald-400"></i>
+                    <a href="{{ url_for('index') }}" class="text-xl font-semibold">CmmntLnd</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="{{ url_for('index') }}" class="hover:text-white {{ 'text-emerald-400' if request.endpoint=='index' else '' }}">Ana Sayfa</a>
+                    <a href="{{ url_for('settings') }}" class="hover:text-white {{ 'text-emerald-400' if request.endpoint=='settings' else '' }}">Ayarlar</a>
+                    <a href="{{ url_for('get_logs') }}" class="hover:text-white {{ 'text-emerald-400' if request.endpoint=='get_logs' else '' }}">Loglar</a>
+                </div>
+                <!-- Mobil menü düğmesi -->
+                <button data-collapse-toggle="mobile-menu" type="button" class="md:hidden inline-flex items-center p-2 text-sm text-gray-400 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <span class="sr-only">Menü</span>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobil menü -->
+        <div class="hidden" id="mobile-menu">
+            <ul class="px-2 pt-2 pb-3 space-y-1">
+                <li><a href="{{ url_for('index') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 {{ 'bg-gray-900 text-emerald-400' if request.endpoint=='index' else 'text-gray-300' }}">Ana Sayfa</a></li>
+                <li><a href="{{ url_for('settings') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 {{ 'bg-gray-900 text-emerald-400' if request.endpoint=='settings' else 'text-gray-300' }}">Ayarlar</a></li>
+                <li><a href="{{ url_for('get_logs') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 text-gray-300">Loglar</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash messages -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-4 rounded-md text-sm {{ 'bg-green-600/20 text-green-300' if category=='success' else 'bg-red-600/20 text-red-300' if category=='error' else 'bg-blue-600/20 text-blue-300' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js" defer></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
