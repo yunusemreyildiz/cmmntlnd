@@ -8,6 +8,7 @@ App Store ve Google Play Store'daki uygulama yorumlarını otomatik olarak takip
 - 🤖 **Google Play Store** yorumlarını takip eder
 - 💬 **Slack** entegrasyonu ile anlık bildirimler
 - 🌐 **Web UI** ile kolay yapılandırma
+- 🎨 **Modern arayüz** (TailwindCSS + Flowbite, karanlık tema)
 - ⏰ **Otomatik** periyodik kontrol
 - 🌍 **Çoklu ülke** desteği
 - 📊 **Detaylı loglar** ve izleme
