@@ -201,6 +201,59 @@ docker run -p 5000:5000 -v $(pwd)/.env:/app/.env app-review-monitor
 FLASK_DEBUG=1 python3 web_ui.py
 ```
 
+## 🔧 Sorun Giderme
+
+### Kurulum Sorunları
+
+#### Dependency Conflict Hatası
+Eğer `ResolutionImpossible` hatası alıyorsanız:
+
+```bash
+# Sanal ortam oluşturun
+python3 -m venv venv
+source venv/bin/activate  # Linux/macOS
+# veya
+venv\Scripts\activate.bat  # Windows
+
+# pip'i güncelleyin
+pip install --upgrade pip
+
+# Bağımlılıkları tek tek yükleyin
+pip install requests>=2.23.0,<3.0.0
+pip install python-dotenv
+pip install flask
+pip install google-play-scraper
+pip install app-store-scraper
+pip install slack-sdk
+```
+
+#### Python Versiyonu Sorunları
+Python 3.8+ gereklidir:
+```bash
+python3 --version  # 3.8+ olmalı
+```
+
+#### macOS ARM64 Sorunları
+Apple Silicon Mac'lerde:
+```bash
+# Homebrew ile Python yükleyin
+brew install python@3.11
+python3.11 -m venv venv
+source venv/bin/activate
+```
+
+### Çalışma Sorunları
+
+#### Monitor Başlamıyor
+- `.env` dosyasının doğru yapılandırıldığından emin olun
+- Slack webhook URL'sinin geçerli olduğunu kontrol edin
+- App ID'lerin doğru olduğunu doğrulayın
+
+#### Slack Mesajları Gelmiyor
+- Webhook URL'sini test edin
+- Kanal adının doğru olduğunu kontrol edin
+- Slack workspace'inizde bot izinlerini kontrol edin
+
 ## 🤝 Katkıda Bulunma
 
 1. Fork yapın

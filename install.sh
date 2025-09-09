@@ -30,9 +30,23 @@ if [ "$1" = "--venv" ]; then
     echo "✅ Virtual environment aktif edildi"
 fi
 
+# pip'i güncelle
+echo "🔄 pip güncelleniyor..."
+pip3 install --upgrade pip
+
 # Bağımlılıkları yükle
 echo "📦 Bağımlılıklar yükleniyor..."
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt || {
+    echo "⚠️  Bağımlılık çakışması tespit edildi. Alternatif kurulum deneniyor..."
+    echo "📦 Bağımlılıklar tek tek yükleniyor..."
+    pip3 install "requests>=2.23.0,<3.0.0"
+    pip3 install python-dotenv
+    pip3 install flask
+    pip3 install google-play-scraper
+    pip3 install app-store-scraper
+    pip3 install slack-sdk
+    pip3 install gunicorn
+}
 
 # .env dosyası oluştur (eğer yoksa)
 if [ ! -f ".env" ]; then
