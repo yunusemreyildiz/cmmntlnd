@@ -237,6 +237,93 @@ def stop_monitor():
     add_log("Monitor durduruldu", 'info')
     return jsonify({'success': True, 'message': 'Monitor durduruldu!'})
 
+@app.route('/database')
+def database():
+    """Database/Export sayfası"""
+    config = WebConfig.read_env()
+    return render_template('database.html', config=config)
+
+@app.route('/export_reviews', methods=['POST'])
+def export_reviews():
+    """Geçmiş yorumları export et"""
+    try:
+        time_period = request.form.get('time_period')
+        export_format = request.form.get('export_format', 'csv')
+        
+        # Zaman aralığını hesapla
+        from datetime import datetime, timedelta
+        if time_period == '15_days':
+            days = 15
+        elif time_period == '1_month':
+            days = 30
+        elif time_period == '2_months':
+            days = 60
+        elif time_period == '3_months':
+            days = 90
+        elif time_period == '6_months':
+            days = 180
+        elif time_period == '1_year':
+            days = 365
+        else:
+            return jsonify({'success': False, 'message': 'Geçersiz zaman aralığı'})
+        
+        start_date = datetime.now() - timedelta(days=days)
+        
+        # Geçmiş yorumları çek
+        from app_review_monitor import AppReviewMonitor
+        monitor = AppReviewMonitor()
+        
+        # Geçmiş yorumları çekme fonksiyonunu çağır
+        historical_reviews = monitor.get_historical_reviews(start_date)
+        
+        if export_format == 'csv':
+            # CSV export
+            import csv
+            import io
+            
+            output = io.StringIO()
+            writer = csv.writer(output)
+            
+            # Header
+            writer.writerow([
+                'Platform', 'Review ID', 'Rating', 'Title', 'Content', 
+                'Author', 'Date', 'Version', 'URL', 'Country'
+            ])
+            
+            # Data
+            for review in historical_reviews:
+                writer.writerow([
+                    review.get('source', ''),
+                    review.get('review_id', ''),
+                    review.get('rating', ''),
+                    review.get('title', ''),
+                    review.get('content', ''),
+                    review.get('author', ''),
+                    review.get('date', ''),
+                    review.get('version', ''),
+                    review.get('url', ''),
+                    review.get('country', '')
+                ])
+            
+            csv_data = output.getvalue()
+            output.close()
+            
+            # Response
+            from flask import make_response
+            response = make_response(csv_data)
+            response.headers['Content-Type'] = 'text/csv'
+            response.headers['Content-Disposition'] = f'attachment; filename=app_reviews_{time_period}_{datetime.now().strftime("%Y%m%d")}.csv'
+            
+            add_log(f"CSV export tamamlandı: {len(historical_reviews)} yorum", 'success')
+            return response
+        
+        else:
+            return jsonify({'success': False, 'message': 'Desteklenmeyen format'})
+            
+    except Exception as e:
+        add_log(f"Export hatası: {str(e)}", 'error')
+        return jsonify({'success': False, 'message': f'Hata: {str(e)}'})
+
 @app.route('/logs')
 def get_logs():
     """Log'ları JSON olarak döndür"""

@@ -39,6 +39,8 @@ python3 web_ui.py
 - ⏰ **Otomatik** periyodik kontrol
 - 🌍 **Çoklu ülke** desteği
 - 📊 **Detaylı loglar** ve izleme
+- 📈 **Database Export** - Geçmiş yorumları CSV/JSON olarak export
+- 🔍 **Data Science Ready** - Analiz için optimize edilmiş veri yapısı
 
 ## 🚀 Hızlı Başlangıç
 
@@ -146,6 +148,56 @@ http://localhost:5000
 ```bash
 python3 main.py
 ```
+
+### 📊 Database Export ile Kullanım
+
+1. **Database sayfasına gidin:**
+```
+http://localhost:5000/database
+```
+
+2. **Zaman aralığı seçin:**
+   - Son 15 gün
+   - Son 1 ay
+   - Son 2 ay
+   - Son 3 ay
+   - Son 6 ay
+   - Son 1 yıl
+
+3. **Export formatını seçin:**
+   - CSV (Excel uyumlu)
+   - JSON (API uyumlu)
+
+4. **Platform seçimi:**
+   - iOS (App Store)
+   - Android (Google Play)
+   - Her ikisi
+
+5. **Export butonuna tıklayın** ve dosyayı indirin
+
+#### 📈 Data Science Analizi İçin CSV Yapısı
+
+```csv
+Platform,Review ID,Rating,Title,Content,Author,Date,Version,URL,Country
+Google Play,review_123,5,Harika uygulama,Çok beğendim,Ahmet,2024-01-15,1.2.3,https://...,tr
+App Store,review_456,4,İyi,Genel olarak iyi,Mehmet,2024-01-14,1.2.3,https://...,tr
+```
+
+#### 🔍 Analiz İmkanları
+
+- **Sentiment Analysis**: Yorum metinlerinde duygu analizi
+- **Rating Trends**: Zaman içinde puan değişimleri
+- **Platform Comparison**: iOS vs Android karşılaştırması
+- **Topic Modeling**: Yorumlarda konu analizi
+- **Version Analysis**: App versiyonlarına göre geri bildirim analizi
+
+#### 📊 Platform Kapasitesi
+
+- **Google Play**: Pagination ile 2000+ yorum çekilebilir (500 yorum/sayfa)
+- **App Store**: Pagination ile 1000+ yorum çekilebilir (50 yorum/sayfa)
+- **Pagination**: Her iki platformda da sayfa sayfa geriye giderek belirtilen tarihe kadar yorum
+- **Rate Limiting**: Platform limitlerini aşmamak için sayfa başına 1-2 saniye bekleme
+- **Tarih Doğruluğu**: Seçilen zaman aralığına tam olarak uygun veri çekimi
 
 ## 📁 Proje Yapısı
 
