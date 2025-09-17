@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="text-center mb-5">
+    <h1 class="apple-largetitle mb-3">📊 Database & Export</h1>
+    <p class="apple-title3 text-muted">Geçmiş yorumları analiz için export edin</p>
+</div>
+
+<!-- Export Configuration Card -->
+<div class="apple-card mb-4">
+    <div class="apple-card-header">
+        <h3 class="apple-title3 mb-0">📈 Veri Export Konfigürasyonu</h3>
+    </div>
+    <div class="apple-card-body">
+        <form id="exportForm" method="POST" action="{{ url_for('export_reviews') }}">
+            <div class="row g-4">
+                <!-- Time Period Selection -->
+                <div class="col-md-6">
+                    <div class="apple-form-group">
+                        <label class="apple-label">⏰ Zaman Aralığı</label>
+                        <select name="time_period" class="apple-select" required>
+                            <option value="">Zaman aralığı seçin</option>
+                            <option value="15_days">📅 Son 15 Gün</option>
+                            <option value="1_month">📅 Son 1 Ay</option>
+                            <option value="2_months">📅 Son 2 Ay</option>
+                            <option value="3_months">📅 Son 3 Ay</option>
+                            <option value="6_months">📅 Son 6 Ay</option>
+                            <option value="1_year">📅 Son 1 Yıl</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Export Format -->
+                <div class="col-md-6">
+                    <div class="apple-form-group">
+                        <label class="apple-label">📄 Export Formatı</label>
+                        <select name="export_format" class="apple-select">
+                            <option value="csv">📊 CSV (Excel uyumlu)</option>
+                            <option value="json">📋 JSON (API uyumlu)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Platform Selection -->
+            <div class="row g-4 mt-3">
+                <div class="col-12">
+                    <div class="apple-form-group">
+                        <label class="apple-label">📱 Platform Seçimi</label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="platforms" value="app_store" id="app_store" checked>
+                                <label class="form-check-label" for="app_store">
+                                    🍎 App Store (iOS)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="platforms" value="google_play" id="google_play" checked>
+                                <label class="form-check-label" for="google_play">
+                                    🤖 Google Play (Android)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Export Button -->
+            <div class="text-center mt-4">
+                <button type="submit" class="apple-button apple-button-success apple-button-large">
+                    <i class="fas fa-download"></i>
+                    Export Başlat
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Data Structure Info -->
+<div class="row g-4">
+    <!-- CSV Structure -->
+    <div class="col-lg-6">
+        <div class="apple-card">
+            <div class="apple-card-header">
+                <h3 class="apple-title3 mb-0">📊 CSV Yapısı</h3>
+            </div>
+            <div class="apple-card-body">
+                <div class="apple-alert">
+                    <h5 class="apple-subheadline mb-3">Data Scientist'ler için optimize edilmiş kolonlar:</h5>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="apple-footnote">Platform:</span>
+                            <span class="apple-code">iOS/Android</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="apple-footnote">Review ID:</span>
+                            <span class="apple-code">Benzersiz kimlik</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="apple-footnote">Rating:</span>
+                            <span class="apple-code">1-5 yıldız</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="apple-footnote">Content:</span>
+                            <span class="apple-code">Yorum metni</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="apple-footnote">Date:</span>
+                            <span class="apple-code">ISO format</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="apple-footnote">Version:</span>
+                            <span class="apple-code">App versiyonu</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Analysis Capabilities -->
+    <div class="col-lg-6">
+        <div class="apple-card">
+            <div class="apple-card-header">
+                <h3 class="apple-title3 mb-0">🔍 Analiz İmkanları</h3>
+            </div>
+            <div class="apple-card-body">
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="apple-icon apple-icon-success">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <h5 class="apple-subheadline mb-1">Sentiment Analysis</h5>
+                            <p class="apple-caption2 text-muted">Yorum metinlerinde duygu analizi</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="apple-icon apple-icon-info">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div>
+                            <h5 class="apple-subheadline mb-1">Rating Trends</h5>
+                            <p class="apple-caption2 text-muted">Zaman içinde puan değişimleri</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="apple-icon apple-icon-warning">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div>
+                            <h5 class="apple-subheadline mb-1">Platform Comparison</h5>
+                            <p class="apple-caption2 text-muted">iOS vs Android karşılaştırması</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="apple-icon" style="background: var(--apple-purple);">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div>
+                            <h5 class="apple-subheadline mb-1">Topic Modeling</h5>
+                            <p class="apple-caption2 text-muted">Yorumlarda konu analizi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Usage Instructions -->
+<div class="apple-card mt-4">
+    <div class="apple-card-header">
+        <h3 class="apple-title3 mb-0">📚 Kullanım Talimatları</h3>
+    </div>
+    <div class="apple-card-body">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="apple-icon apple-icon-info mb-3" style="margin: 0 auto; width: 48px; height: 48px; font-size: 20px;">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h5 class="apple-subheadline mb-2">1. Konfigürasyon</h5>
+                    <p class="apple-caption2 text-muted">Zaman aralığı ve format seçin</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="apple-icon apple-icon-warning mb-3" style="margin: 0 auto; width: 48px; height: 48px; font-size: 20px;">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h5 class="apple-subheadline mb-2">2. Export</h5>
+                    <p class="apple-caption2 text-muted">Verileri CSV/JSON olarak indirin</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="apple-icon apple-icon-success mb-3" style="margin: 0 auto; width: 48px; height: 48px; font-size: 20px;">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h5 class="apple-subheadline mb-2">3. Analiz</h5>
+                    <p class="apple-caption2 text-muted">Data science araçlarında analiz edin</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('exportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const timePeriod = formData.get('time_period');
+    
+    if (!timePeriod) {
+        alert('Lütfen zaman aralığı seçin');
+        return;
+    }
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Export Ediliyor...';
+    submitBtn.disabled = true;
+    
+    // Submit form
+    fetch(this.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            // Download file
+            return response.blob();
+        } else {
+            throw new Error('Export hatası');
+        }
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `app_reviews_${timePeriod}_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        alert('Export başarıyla tamamlandı!');
+    })
+    .catch(error => {
+        alert('Export hatası: ' + error.message);
+    })
+    .finally(() => {
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+</script>
+{% endblock %}

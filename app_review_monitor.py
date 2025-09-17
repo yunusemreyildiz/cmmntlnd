@@ -436,3 +436,221 @@ class AppReviewMonitor:
             print(f"✅ App Store son yorum ID: {self.last_app_store_review_id}")
         
         print("🎯 İlk kurulum tamamlandı. Artık sadece yeni yorumlar takip edilecek.")
+    
+    def get_historical_reviews(self, start_date: datetime) -> List[Dict]:
+        """Belirtilen tarihten itibaren tüm yorumları çek (export için)"""
+        print(f"📊 Geçmiş yorumlar çekiliyor: {start_date.strftime('%d.%m.%Y')} - {datetime.now().strftime('%d.%m.%Y')}")
+        
+        all_reviews = []
+        
+        # Google Play Store'dan geçmiş yorumları çek
+        try:
+            print("🤖 Google Play Store geçmiş yorumları çekiliyor...")
+            google_reviews = self.get_google_play_historical_reviews(start_date)
+            all_reviews.extend(google_reviews)
+            print(f"✅ Google Play: {len(google_reviews)} yorum bulundu")
+        except Exception as e:
+            print(f"❌ Google Play geçmiş yorum hatası: {e}")
+        
+        # App Store'dan geçmiş yorumları çek
+        try:
+            print("🍎 App Store geçmiş yorumları çekiliyor...")
+            app_store_reviews = self.get_app_store_historical_reviews(start_date)
+            all_reviews.extend(app_store_reviews)
+            print(f"✅ App Store: {len(app_store_reviews)} yorum bulundu")
+        except Exception as e:
+            print(f"❌ App Store geçmiş yorum hatası: {e}")
+        
+        # Tarihe göre sırala (en yeni önce)
+        all_reviews.sort(key=lambda x: self.parse_date(x['date']), reverse=True)
+        
+        print(f"🎉 Toplam {len(all_reviews)} geçmiş yorum bulundu")
+        return all_reviews
+    
+    def get_google_play_historical_reviews(self, start_date: datetime) -> List[Dict]:
+        """Google Play Store'dan geçmiş yorumları çek (Pagination ile belirtilen tarihe kadar)"""
+        try:
+            country = self.config.GOOGLE_PLAY_COUNTRY if self.config.GOOGLE_PLAY_COUNTRY != 'all' else 'tr'
+            historical_reviews = []
+            continuation_token = None
+            page_count = 0
+            max_pages = 50  # Maksimum 50 sayfa (25,000 yorum)
+            oldest_review_date = None
+            
+            print(f"🤖 Google Play pagination başlatılıyor: {start_date.strftime('%d.%m.%Y')} tarihinden itibaren")
+            
+            while page_count < max_pages:
+                try:
+                    page_count += 1
+                    print(f"📄 Sayfa {page_count} çekiliyor...")
+                    
+                    # Google Play reviews API call with continuation token
+                    if continuation_token:
+                        result, continuation_token = reviews(
+                            self.config.GOOGLE_PLAY_APP_ID,
+                            lang='tr',
+                            country=country,
+                            sort=Sort.NEWEST,
+                            count=500,  # Her sayfada 500 yorum
+                            continuation_token=continuation_token
+                        )
+                    else:
+                        result, continuation_token = reviews(
+                            self.config.GOOGLE_PLAY_APP_ID,
+                            lang='tr',
+                            country=country,
+                            sort=Sort.NEWEST,
+                            count=500  # İlk sayfa
+                        )
+                    
+                    if not result:
+                        print(f"📭 Sayfa {page_count}: Yorum bulunamadı, pagination durduruluyor")
+                        break
+                    
+                    page_reviews = []
+                    for review in result:
+                        try:
+                            review_date = self.parse_date(review['at'])
+                            
+                            # En eski yorum tarihini takip et
+                            if oldest_review_date is None or review_date < oldest_review_date:
+                                oldest_review_date = review_date
+                            
+                            # Sadece belirtilen tarihten sonraki yorumları al
+                            if review_date >= start_date:
+                                page_reviews.append({
+                                    'source': 'Google Play',
+                                    'review_id': review['reviewId'],
+                                    'rating': review['score'],
+                                    'title': review.get('title', ''),
+                                    'content': review['content'],
+                                    'author': review['userName'],
+                                    'date': review_date,
+                                    'version': review.get('appVersion', ''),
+                                    'url': f"https://play.google.com/store/apps/details?id={self.config.GOOGLE_PLAY_APP_ID}&reviewId={review['reviewId']}",
+                                    'country': self.config.GOOGLE_PLAY_COUNTRY
+                                })
+                        except Exception as e:
+                            print(f"⚠️  Google Play yorum parse hatası: {e}")
+                            continue
+                    
+                    if not page_reviews:
+                        print(f"📭 Sayfa {page_count}: Hedef tarih aralığında yorum yok, pagination durduruluyor")
+                        break
+                    
+                    historical_reviews.extend(page_reviews)
+                    print(f"✅ Sayfa {page_count}: {len(page_reviews)} yorum eklendi (Toplam: {len(historical_reviews)})")
+                    
+                    # Eğer en eski yorum hedef tarihten önceyse dur
+                    if oldest_review_date and oldest_review_date < start_date:
+                        print(f"📅 En eski yorum tarihi ({oldest_review_date.strftime('%d.%m.%Y')}) hedef tarihten önce, pagination durduruluyor")
+                        break
+                    
+                    # Continuation token yoksa daha fazla sayfa yok
+                    if not continuation_token:
+                        print(f"📭 Continuation token yok, pagination durduruluyor")
+                        break
+                    
+                    time.sleep(2)  # Rate limiting için bekleme
+                    
+                except Exception as e:
+                    print(f"❌ Sayfa {page_count} hatası: {e}")
+                    break
+            
+            print(f"🎉 Google Play pagination tamamlandı: {len(historical_reviews)} yorum toplandı")
+            if oldest_review_date:
+                print(f"📅 Tarih aralığı: {oldest_review_date.strftime('%d.%m.%Y')} - {datetime.now().strftime('%d.%m.%Y')}")
+            
+            return historical_reviews
+            
+        except Exception as e:
+            print(f"❌ Google Play Store geçmiş yorum hatası: {e}")
+            return []
+    
+    def get_app_store_historical_reviews(self, start_date: datetime) -> List[Dict]:
+        """App Store'dan geçmiş yorumları çek (Pagination ile daha fazla yorum)"""
+        try:
+            if not self.config.APP_STORE_APP_ID:
+                return []
+            
+            country = self.config.APP_STORE_COUNTRY if self.config.APP_STORE_COUNTRY != 'all' else 'tr'
+            historical_reviews = []
+            page = 1
+            max_pages = 20  # Maksimum 20 sayfa (1000 yorum)
+            oldest_review_date = None
+            
+            print(f"🍎 App Store pagination başlatılıyor: {start_date.strftime('%d.%m.%Y')} tarihinden itibaren")
+            
+            while page <= max_pages:
+                try:
+                    # App Store RSS Feed URL with pagination
+                    url = f"https://itunes.apple.com/{country}/rss/customerreviews/id={self.config.APP_STORE_APP_ID}/sortBy=mostRecent/page={page}/json"
+                    
+                    print(f"📄 Sayfa {page} çekiliyor...")
+                    response = requests.get(url, timeout=10)
+                    response.raise_for_status()
+                    
+                    data = response.json()
+                    
+                    if 'feed' not in data or 'entry' not in data['feed']:
+                        print(f"📭 Sayfa {page}: Yorum bulunamadı, pagination durduruluyor")
+                        break
+                    
+                    page_reviews = []
+                    for entry in data['feed']['entry']:
+                        try:
+                            review_date = self.parse_date(entry['updated']['label'])
+                            
+                            # En eski yorum tarihini takip et
+                            if oldest_review_date is None or review_date < oldest_review_date:
+                                oldest_review_date = review_date
+                            
+                            # Sadece belirtilen tarihten sonraki yorumları al
+                            if review_date >= start_date:
+                                page_reviews.append({
+                                    'source': 'App Store',
+                                    'review_id': entry['id']['label'],
+                                    'author': entry['author']['name']['label'],
+                                    'rating': int(entry['im:rating']['label']),
+                                    'title': entry['title']['label'],
+                                    'content': entry['content']['label'],
+                                    'date': review_date,
+                                    'version': entry['im:version']['label'],
+                                    'url': f"https://apps.apple.com/tr/app/id{self.config.APP_STORE_APP_ID}",
+                                    'country': self.config.APP_STORE_COUNTRY
+                                })
+                        except (KeyError, ValueError) as e:
+                            print(f"⚠️  App Store yorum parse hatası: {e}")
+                            continue
+                    
+                    if not page_reviews:
+                        print(f"📭 Sayfa {page}: Hedef tarih aralığında yorum yok, pagination durduruluyor")
+                        break
+                    
+                    historical_reviews.extend(page_reviews)
+                    print(f"✅ Sayfa {page}: {len(page_reviews)} yorum eklendi (Toplam: {len(historical_reviews)})")
+                    
+                    # Eğer en eski yorum hedef tarihten önceyse dur
+                    if oldest_review_date and oldest_review_date < start_date:
+                        print(f"📅 En eski yorum tarihi ({oldest_review_date.strftime('%d.%m.%Y')}) hedef tarihten önce, pagination durduruluyor")
+                        break
+                    
+                    page += 1
+                    time.sleep(1)  # Rate limiting için bekleme
+                    
+                except requests.RequestException as e:
+                    print(f"❌ Sayfa {page} bağlantı hatası: {e}")
+                    break
+                except Exception as e:
+                    print(f"❌ Sayfa {page} işleme hatası: {e}")
+                    break
+            
+            print(f"🎉 App Store pagination tamamlandı: {len(historical_reviews)} yorum toplandı")
+            if oldest_review_date:
+                print(f"📅 Tarih aralığı: {oldest_review_date.strftime('%d.%m.%Y')} - {datetime.now().strftime('%d.%m.%Y')}")
+            
+            return historical_reviews
+            
+        except Exception as e:
+            print(f"❌ App Store geçmiş yorum hatası: {e}")
+            return []
