@@ -371,5 +371,15 @@ def run_monitor():
         monitor_running = False
 
 if __name__ == '__main__':
-    add_log("Web UI başlatıldı", 'info')
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    import sys
+    
+    # Port parametresi kontrol et
+    port = 5000
+    if len(sys.argv) > 1 and sys.argv[1] == '--port':
+        try:
+            port = int(sys.argv[2])
+        except (IndexError, ValueError):
+            port = 5000
+    
+    add_log(f"Web UI başlatıldı - Port: {port}", 'info')
+    app.run(debug=True, host='0.0.0.0', port=port)
