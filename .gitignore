@@ -155,3 +155,17 @@ data/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Runtime singleton locks (Web UI / monitor)
+.web_ui.lock
+.monitor.lock
+
+# SQLite veritabanı (yorumlar + istatistikler)
+reviews.db
+reviews.db-wal
+reviews.db-shm
+
+# Kişiye/makineye özel launchd deployment dosyaları (kişisel path içerir)
+*.plist
+monitor.out.log
+monitor.err.log

@@ -2,112 +2,131 @@
 
 {% block content %}
 <!-- Hero -->
-<section class="text-center mb-8">
-  <h1 class="text-4xl font-bold tracking-tight mb-2">CmmntLnd</h1>
-  <p class="text-gray-400">Google Play & App Store yorumlarını anlık takip edin</p>
+<section class="mb-8">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <h1 class="text-4xl font-bold tracking-tight">Yorum Takip Paneli</h1>
+      <p class="text-gray-400 mt-2">Google Play & App Store yorumlarını anlık yakala, Slack'e taşı.</p>
+    </div>
+    <div class="flex gap-2">
+      <a href="{{ url_for('database') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-medium transition">
+        <i class="fa-solid fa-database"></i> Veritabanı
+      </a>
+      <a href="{{ url_for('settings') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-medium transition">
+        <i class="fa-solid fa-sliders"></i> Ayarlar
+      </a>
+    </div>
+  </div>
 </section>
 
-<!-- Monitor Status -->
-<div class="grid lg:grid-cols-3 gap-6 mb-8">
-  <div class="col-span-3 bg-gray-800 rounded-xl shadow-md p-6 flex flex-col md:flex-row items-center justify-between">
+<!-- Monitor durumu -->
+<div class="relative overflow-hidden rounded-2xl border border-white/5 bg-ink-850 shadow-card p-6 mb-6">
+  <div class="absolute inset-y-0 left-0 w-1.5 {{ 'bg-brand-500' if monitor_running else 'bg-red-500' }}"></div>
+  <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
     <div class="flex items-center gap-4">
-      <div class="h-14 w-14 flex items-center justify-center rounded-full {{ 'bg-green-600' if monitor_running else 'bg-red-600' }} text-white">
-        <i class="fa-solid fa-{{ 'play' if monitor_running else 'pause' }}"></i>
+      <div class="relative grid h-14 w-14 place-items-center rounded-2xl {{ 'bg-brand-500/15 text-brand-400' if monitor_running else 'bg-red-500/15 text-red-400' }}">
+        <i class="fa-solid fa-{{ 'wave-square' if monitor_running else 'pause' }} text-xl"></i>
+        {% if monitor_running %}
+        <span class="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
+        </span>
+        {% endif %}
       </div>
       <div>
-        <h3 class="text-lg font-semibold">Monitor Durumu</h3>
-        <span class="inline-flex items-center gap-2 text-sm {{ 'text-green-400' if monitor_running else 'text-red-400' }}">
-          <i class="fa-solid fa-circle text-xs"></i>
-          {{ 'Çalışıyor' if monitor_running else 'Durduruldu' }}
-        </span>
+        <h3 class="text-lg font-semibold">Monitor {{ 'Aktif' if monitor_running else 'Durduruldu' }}</h3>
+        <p class="text-sm {{ 'text-brand-400' if monitor_running else 'text-red-400' }}">
+          {{ 'Yeni yorumlar izleniyor' if monitor_running else 'İzleme şu an kapalı' }}
+        </p>
+        <p class="text-xs text-gray-600 mt-1.5">
+          PID <code class="text-gray-400">{{ process_pid }}</code> ·
+          Thread <code class="text-gray-400">{{ '1' if monitor_thread_alive else '0' }}</code>
+        </p>
       </div>
     </div>
-    <div class="flex gap-3 mt-4 md:mt-0">
+    <div class="flex gap-3">
       {% if not monitor_running %}
-      <button onclick="startMonitor()" class="inline-flex items-center gap-2 px-5 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white">
+      <button onclick="startMonitor()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-medium transition">
         <i class="fa-solid fa-play"></i> Başlat
       </button>
       {% else %}
-      <button onclick="stopMonitor()" class="inline-flex items-center gap-2 px-5 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white">
+      <button onclick="stopMonitor()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-medium transition">
         <i class="fa-solid fa-stop"></i> Durdur
       </button>
       {% endif %}
-      <a href="{{ url_for('settings') }}" class="inline-flex items-center gap-2 px-5 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white">
-        <i class="fa-solid fa-cog"></i> Ayarlar
-      </a>
-      <a href="{{ url_for('database') }}" class="inline-flex items-center gap-2 px-5 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white">
-        <i class="fa-solid fa-database"></i> Database
-      </a>
     </div>
   </div>
 </div>
 
-<!-- App info cards -->
-<div class="grid md:grid-cols-3 gap-6 mb-8">
-  <!-- Google Play -->
-  <div class="bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center text-center">
-    <i class="fab fa-google-play text-4xl text-green-500 mb-4"></i>
-    <h4 class="font-semibold mb-1">Google Play Store</h4>
-    <p class="text-sm text-gray-400 mb-3">Android uygulaması</p>
-    <code class="break-all bg-gray-900/50 px-2 py-1 rounded text-sm">{{ config.get('GOOGLE_PLAY_APP_ID', 'Ayarlanmamış') }}</code>
+<!-- Bağlantı kartları -->
+<div class="grid sm:grid-cols-3 gap-5 mb-8">
+  {% set cards = [
+    ('fa-brands fa-google-play', 'text-brand-400', 'Google Play', 'Android uygulaması', config.get('GOOGLE_PLAY_APP_ID', 'Ayarlanmamış')),
+    ('fa-brands fa-apple', 'text-gray-200', 'App Store', 'iOS uygulaması', config.get('APP_STORE_APP_ID', 'Ayarlanmamış')),
+    ('fa-brands fa-slack', 'text-indigo-400', 'Slack Kanalı', 'Bildirim hedefi', config.get('SLACK_CHANNEL', '#app-reviews'))
+  ] %}
+  {% for icon, color, title, sub, val in cards %}
+  <div class="group rounded-2xl border border-white/5 bg-ink-850 p-5 shadow-card hover:border-white/10 transition">
+    <div class="flex items-center gap-3 mb-3">
+      <i class="{{ icon }} text-2xl {{ color }}"></i>
+      <div>
+        <h4 class="font-semibold leading-tight">{{ title }}</h4>
+        <p class="text-xs text-gray-500">{{ sub }}</p>
+      </div>
+    </div>
+    <code class="block break-all bg-ink-950 px-3 py-2 rounded-lg text-xs text-gray-400 border border-white/5">{{ val }}</code>
   </div>
-  <!-- App Store -->
-  <div class="bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center text-center">
-    <i class="fab fa-apple text-4xl text-gray-300 mb-4"></i>
-    <h4 class="font-semibold mb-1">App Store</h4>
-    <p class="text-sm text-gray-400 mb-3">iOS uygulaması</p>
-    <code class="break-all bg-gray-900/50 px-2 py-1 rounded text-sm">{{ config.get('APP_STORE_APP_ID', 'Ayarlanmamış') }}</code>
-  </div>
-  <!-- Slack -->
-  <div class="bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center text-center">
-    <i class="fab fa-slack text-4xl text-indigo-400 mb-4"></i>
-    <h4 class="font-semibold mb-1">Slack Kanalı</h4>
-    <p class="text-sm text-gray-400 mb-3">Bildirim kanalı</p>
-    <code class="break-all bg-gray-900/50 px-2 py-1 rounded text-sm">{{ config.get('SLACK_CHANNEL', '#app-reviews') }}</code>
-  </div>
+  {% endfor %}
 </div>
 
-<!-- Logs and Quick guide -->
+<!-- Loglar + rehber -->
 <div class="grid lg:grid-cols-3 gap-6">
-  <!-- Logs -->
-  <div class="lg:col-span-2">
-    <div class="bg-gray-800 rounded-xl shadow">
-      <div class="border-b border-gray-700 px-6 py-4 flex items-center justify-between">
-        <h3 class="font-semibold">Canlı Loglar</h3>
+  <div class="lg:col-span-2 rounded-2xl border border-white/5 bg-ink-850 shadow-card overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-white/5">
+      <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-terminal text-brand-400"></i> Canlı Loglar</h3>
+      <span class="flex items-center gap-1.5 text-xs text-gray-500"><span class="h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse"></span> otomatik yenilenir</span>
+    </div>
+    <div class="p-4 h-96 overflow-y-auto space-y-2 text-sm" id="log-container">
+      {% for log in logs %}
+      <div class="px-3.5 py-2 rounded-lg bg-ink-900 border-l-2 {{ 'border-brand-500' if log.level=='success' else 'border-red-500' if log.level=='error' else 'border-blue-500' }}">
+        <span class="text-gray-600 mr-2 text-xs font-mono">{{ log.timestamp }}</span><span class="text-gray-300">{{ log.message }}</span>
       </div>
-      <div class="p-4 h-96 overflow-y-auto space-y-3 text-sm" id="log-container">
-        {% for log in logs %}
-        <div class="px-4 py-2 rounded-md {{ 'border-l-4 border-green-500' if log.level=='success' else 'border-l-4 border-red-500' if log.level=='error' else 'border-l-4 border-blue-500' }} bg-gray-700/50">
-          <span class="text-gray-400 mr-2">{{ log.timestamp }}</span>{{ log.message }}
-        </div>
-        {% endfor %}
-        {% if not logs %}
-        <div class="text-center text-gray-400">Henüz log yok. Monitor'u başlatın.</div>
-        {% endif %}
+      {% endfor %}
+      {% if not logs %}
+      <div class="h-full flex flex-col items-center justify-center text-center text-gray-600">
+        <i class="fa-solid fa-inbox text-3xl mb-2"></i>
+        <p>Henüz log yok. Monitor'u başlatın.</p>
       </div>
+      {% endif %}
     </div>
   </div>
-  <!-- Quick guide -->
-  <div class="space-y-6">
-    <div class="bg-gray-800 rounded-xl shadow p-6">
-      <h3 class="font-semibold mb-4">Hızlı Başlangıç</h3>
-      <ol class="list-decimal list-inside space-y-2 text-gray-300 text-sm">
-        <li>Ayarlar sayfasında App ID ve Slack webhook gir.</li>
-        <li>Slack bağlantısını test et.</li>
-        <li>Monitor'u başlat.</li>
-        <li>Yeni yorumları takip et!</li>
-      </ol>
-    </div>
+
+  <div class="rounded-2xl border border-white/5 bg-ink-850 shadow-card p-6">
+    <h3 class="font-semibold mb-4 flex items-center gap-2"><i class="fa-solid fa-rocket text-brand-400"></i> Hızlı Başlangıç</h3>
+    <ol class="space-y-3 text-sm text-gray-300">
+      {% for step in ['Ayarlar\'da App ID ve Slack webhook gir', 'Slack bağlantısını test et', 'Monitor\'u başlat', 'Yeni yorumlar Slack\'e aksın'] %}
+      <li class="flex gap-3">
+        <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand-500/15 text-brand-400 text-xs font-semibold">{{ loop.index }}</span>
+        <span>{{ step }}</span>
+      </li>
+      {% endfor %}
+    </ol>
   </div>
 </div>
-
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
 function startMonitor(){fetch('/start_monitor',{method:'POST'}).then(r=>r.json()).then(d=>{d.success?location.reload():alert('Hata: '+d.message)});}
 function stopMonitor(){fetch('/stop_monitor',{method:'POST'}).then(r=>r.json()).then(d=>{d.success?location.reload():alert('Hata: '+d.message)});}
-// Auto refresh logs
-setInterval(()=>{fetch('/logs').then(r=>r.json()).then(logs=>{const c=document.getElementById('log-container');if(!c)return;c.innerHTML=logs.map(l=>`<div class='px-4 py-2 rounded-md ${l.level==='success'?'border-l-4 border-green-500':'error'?'border-l-4 border-red-500':'border-l-4 border-blue-500'} bg-gray-700/50'><span class='text-gray-400 mr-2'>${l.timestamp}</span>${l.message}</div>`).join('');c.scrollTop=c.scrollHeight;});},5000);
+setInterval(()=>{fetch('/logs').then(r=>r.json()).then(logs=>{
+  const c=document.getElementById('log-container');if(!c)return;
+  if(!logs.length)return;
+  c.innerHTML=logs.map(l=>{
+    const b=l.level==='success'?'border-brand-500':l.level==='error'?'border-red-500':'border-blue-500';
+    return `<div class="px-3.5 py-2 rounded-lg bg-ink-900 border-l-2 ${b}"><span class="text-gray-600 mr-2 text-xs font-mono">${l.timestamp}</span><span class="text-gray-300">${l.message}</span></div>`;
+  }).join('');
+  c.scrollTop=c.scrollHeight;
+});},5000);
 </script>
 {% endblock %}

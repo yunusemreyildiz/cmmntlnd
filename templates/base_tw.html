@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,46 +7,98 @@
 
     <!-- TailwindCSS (CDN dev; prod için derleyin) -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <!-- Flowbite bileşenleri -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7',
+                400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857',
+                800: '#065f46', 900: '#064e3b',
+              },
+              ink: {
+                850: '#161b22', 900: '#0d1117', 950: '#080b10',
+              },
+            },
+            fontFamily: {
+              sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+            },
+            boxShadow: {
+              glow: '0 0 0 1px rgba(16,185,129,0.15), 0 8px 30px -12px rgba(16,185,129,0.35)',
+              card: '0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -16px rgba(0,0,0,0.6)',
+            },
+            keyframes: {
+              'fade-up': { '0%': { opacity: 0, transform: 'translateY(8px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+            },
+            animation: { 'fade-up': 'fade-up 0.4s ease-out both' },
+          },
+        },
+      };
+    </script>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon.png') }}" />
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png') }}" />
-    <link rel="mask-icon" href="{{ url_for('static', filename='favicon.svg') }}" color="#10b981" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon.svg') }}" />
-    <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H8l-4 4V6a2 2 0 012-2z'/%3E%3C/svg%3E" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H8l-4 4V6a2 2 0 012-2z'/%3E%3C/svg%3E" />
+
+    <style>
+      body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+      /* İnce, modern scrollbar */
+      ::-webkit-scrollbar { width: 10px; height: 10px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 9999px; border: 2px solid transparent; background-clip: content-box; }
+      ::-webkit-scrollbar-thumb:hover { background: #4a5568; background-clip: content-box; }
+    </style>
 
     {% block extra_head %}{% endblock %}
 </head>
-<body class="min-h-screen bg-gray-900 text-gray-100 font-sans">
+<body class="min-h-screen bg-ink-950 text-gray-100 font-sans antialiased selection:bg-brand-500/30">
+    <!-- Arka plan dekoru -->
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-brand-600/10 blur-3xl"></div>
+        <div class="absolute top-1/3 -left-40 h-96 w-96 rounded-full bg-indigo-600/10 blur-3xl"></div>
+    </div>
+
     <!-- Navbar -->
-    <nav class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+    <nav class="sticky top-0 z-50 border-b border-white/5 bg-ink-900/70 backdrop-blur-xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-comments text-emerald-400"></i>
-                    <a href="{{ url_for('index') }}" class="text-xl font-semibold">CmmntLnd</a>
+                <a href="{{ url_for('index') }}" class="flex items-center gap-2.5 group">
+                    <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-glow transition group-hover:scale-105">
+                        <i class="fa-solid fa-comment-dots"></i>
+                    </span>
+                    <span class="text-lg font-bold tracking-tight">CmmntLnd</span>
+                </a>
+
+                <div class="hidden md:flex items-center gap-1">
+                    {% set nav = [('index','Ana Sayfa','fa-house'), ('database','Veritabanı','fa-database'), ('settings','Ayarlar','fa-sliders')] %}
+                    {% for ep, label, icon in nav %}
+                    <a href="{{ url_for(ep) }}"
+                       class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition
+                       {{ 'bg-brand-500/15 text-brand-300' if request.endpoint==ep else 'text-gray-400 hover:text-white hover:bg-white/5' }}">
+                        <i class="fa-solid {{ icon }} text-xs"></i> {{ label }}
+                    </a>
+                    {% endfor %}
                 </div>
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="{{ url_for('index') }}" class="hover:text-white {{ 'text-emerald-400' if request.endpoint=='index' else '' }}">Ana Sayfa</a>
-                    <a href="{{ url_for('settings') }}" class="hover:text-white {{ 'text-emerald-400' if request.endpoint=='settings' else '' }}">Ayarlar</a>
-                    <a href="{{ url_for('get_logs') }}" class="hover:text-white {{ 'text-emerald-400' if request.endpoint=='get_logs' else '' }}">Loglar</a>
-                </div>
-                <!-- Mobil menü düğmesi -->
-                <button data-collapse-toggle="mobile-menu" type="button" class="md:hidden inline-flex items-center p-2 text-sm text-gray-400 hover:bg-gray-700 hover:text-white rounded-lg">
-                    <span class="sr-only">Menü</span>
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+
+                <button data-mobile-toggle type="button" class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white">
+                    <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
         </div>
-        <!-- Mobil menü -->
-        <div class="hidden" id="mobile-menu">
-            <ul class="px-2 pt-2 pb-3 space-y-1">
-                <li><a href="{{ url_for('index') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 {{ 'bg-gray-900 text-emerald-400' if request.endpoint=='index' else 'text-gray-300' }}">Ana Sayfa</a></li>
-                <li><a href="{{ url_for('settings') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 {{ 'bg-gray-900 text-emerald-400' if request.endpoint=='settings' else 'text-gray-300' }}">Ayarlar</a></li>
-                <li><a href="{{ url_for('get_logs') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 text-gray-300">Loglar</a></li>
-            </ul>
+        <div class="hidden md:hidden border-t border-white/5" id="mobile-menu">
+            <div class="px-4 py-3 space-y-1">
+                {% for ep, label, icon in nav %}
+                <a href="{{ url_for(ep) }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                   {{ 'bg-brand-500/15 text-brand-300' if request.endpoint==ep else 'text-gray-300 hover:bg-white/5' }}">
+                    <i class="fa-solid {{ icon }} w-4"></i> {{ label }}
+                </a>
+                {% endfor %}
+            </div>
         </div>
     </nav>
 
@@ -55,8 +107,12 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="mb-4 p-4 rounded-md text-sm {{ 'bg-green-600/20 text-green-300' if category=='success' else 'bg-red-600/20 text-red-300' if category=='error' else 'bg-blue-600/20 text-blue-300' }}">
-                        {{ message }}
+                    <div class="mb-3 flex items-center gap-3 p-4 rounded-xl text-sm border
+                        {{ 'bg-brand-500/10 text-brand-300 border-brand-500/20' if category=='success'
+                           else 'bg-red-500/10 text-red-300 border-red-500/20' if category=='error'
+                           else 'bg-blue-500/10 text-blue-300 border-blue-500/20' }}">
+                        <i class="fa-solid {{ 'fa-circle-check' if category=='success' else 'fa-circle-exclamation' if category=='error' else 'fa-circle-info' }}"></i>
+                        <span>{{ message }}</span>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -64,13 +120,24 @@
     </div>
 
     <!-- Main -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-up">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-8 border-t border-white/5">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-comment-dots text-brand-500"></i> CmmntLnd · App Store & Google Play yorum takibi</span>
+            <span>Günlük özet her gün 10:00'da Slack'e gider</span>
+        </div>
+    </footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js" defer></script>
+    <script>
+      // Mobil menü aç/kapa
+      document.querySelector('[data-mobile-toggle]')?.addEventListener('click', () => {
+        document.getElementById('mobile-menu')?.classList.toggle('hidden');
+      });
+    </script>
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>

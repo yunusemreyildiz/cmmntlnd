@@ -1,263 +1,303 @@
-{% extends "base.html" %}
+{% extends "base_tw.html" %}
+
+{% block title %}Veritabanı - CmmntLnd{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="text-center mb-5">
-    <h1 class="apple-largetitle mb-3">📊 Database & Export</h1>
-    <p class="apple-title3 text-muted">Geçmiş yorumları analiz için export edin</p>
-</div>
+<!-- Başlık -->
+<header class="mb-8">
+  <h1 class="text-3xl font-bold tracking-tight">Veritabanı & Analiz</h1>
+  <p class="text-gray-400 mt-1">Yorumları sakla, mağaza performansını izle, dışa aktar.</p>
+</header>
 
-<!-- Export Configuration Card -->
-<div class="apple-card mb-4">
-    <div class="apple-card-header">
-        <h3 class="apple-title3 mb-0">📈 Veri Export Konfigürasyonu</h3>
+<!-- İstatistik kartları -->
+<section class="grid md:grid-cols-2 gap-5 mb-6">
+  <!-- iOS -->
+  <div class="rounded-2xl border border-white/5 bg-ink-850 p-5 shadow-card">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2.5">
+        <i class="fa-brands fa-apple text-xl text-gray-200"></i>
+        <h3 class="font-semibold">iOS · App Store</h3>
+      </div>
+      <span id="iosUpdated" class="text-[11px] text-gray-500"></span>
     </div>
-    <div class="apple-card-body">
-        <form id="exportForm" method="POST" action="{{ url_for('export_reviews') }}">
-            <div class="row g-4">
-                <!-- Time Period Selection -->
-                <div class="col-md-6">
-                    <div class="apple-form-group">
-                        <label class="apple-label">⏰ Zaman Aralığı</label>
-                        <select name="time_period" class="apple-select" required>
-                            <option value="">Zaman aralığı seçin</option>
-                            <option value="15_days">📅 Son 15 Gün</option>
-                            <option value="1_month">📅 Son 1 Ay</option>
-                            <option value="2_months">📅 Son 2 Ay</option>
-                            <option value="3_months">📅 Son 3 Ay</option>
-                            <option value="6_months">📅 Son 6 Ay</option>
-                            <option value="1_year">📅 Son 1 Yıl</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Export Format -->
-                <div class="col-md-6">
-                    <div class="apple-form-group">
-                        <label class="apple-label">📄 Export Formatı</label>
-                        <select name="export_format" class="apple-select">
-                            <option value="csv">📊 CSV (Excel uyumlu)</option>
-                            <option value="json">📋 JSON (API uyumlu)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Platform Selection -->
-            <div class="row g-4 mt-3">
-                <div class="col-12">
-                    <div class="apple-form-group">
-                        <label class="apple-label">📱 Platform Seçimi</label>
-                        <div class="d-flex gap-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="platforms" value="app_store" id="app_store" checked>
-                                <label class="form-check-label" for="app_store">
-                                    🍎 App Store (iOS)
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="platforms" value="google_play" id="google_play" checked>
-                                <label class="form-check-label" for="google_play">
-                                    🤖 Google Play (Android)
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Export Button -->
-            <div class="text-center mt-4">
-                <button type="submit" class="apple-button apple-button-success apple-button-large">
-                    <i class="fas fa-download"></i>
-                    Export Başlat
-                </button>
-            </div>
-        </form>
+    <div id="iosStats" class="text-sm text-gray-400">
+      <div class="animate-pulse space-y-2">
+        <div class="h-7 w-28 bg-white/5 rounded"></div>
+        <div class="h-4 w-40 bg-white/5 rounded"></div>
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- Data Structure Info -->
-<div class="row g-4">
-    <!-- CSV Structure -->
-    <div class="col-lg-6">
-        <div class="apple-card">
-            <div class="apple-card-header">
-                <h3 class="apple-title3 mb-0">📊 CSV Yapısı</h3>
-            </div>
-            <div class="apple-card-body">
-                <div class="apple-alert">
-                    <h5 class="apple-subheadline mb-3">Data Scientist'ler için optimize edilmiş kolonlar:</h5>
-                    <div class="d-flex flex-column gap-2">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="apple-footnote">Platform:</span>
-                            <span class="apple-code">iOS/Android</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="apple-footnote">Review ID:</span>
-                            <span class="apple-code">Benzersiz kimlik</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="apple-footnote">Rating:</span>
-                            <span class="apple-code">1-5 yıldız</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="apple-footnote">Content:</span>
-                            <span class="apple-code">Yorum metni</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="apple-footnote">Date:</span>
-                            <span class="apple-code">ISO format</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="apple-footnote">Version:</span>
-                            <span class="apple-code">App versiyonu</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Android -->
+  <div class="rounded-2xl border border-white/5 bg-ink-850 p-5 shadow-card">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2.5">
+        <i class="fa-brands fa-google-play text-xl text-brand-400"></i>
+        <h3 class="font-semibold">Android · Google Play</h3>
+      </div>
+      <span id="androidUpdated" class="text-[11px] text-gray-500"></span>
     </div>
-    
-    <!-- Analysis Capabilities -->
-    <div class="col-lg-6">
-        <div class="apple-card">
-            <div class="apple-card-header">
-                <h3 class="apple-title3 mb-0">🔍 Analiz İmkanları</h3>
-            </div>
-            <div class="apple-card-body">
-                <div class="d-flex flex-column gap-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="apple-icon apple-icon-success">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div>
-                            <h5 class="apple-subheadline mb-1">Sentiment Analysis</h5>
-                            <p class="apple-caption2 text-muted">Yorum metinlerinde duygu analizi</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="apple-icon apple-icon-info">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <div>
-                            <h5 class="apple-subheadline mb-1">Rating Trends</h5>
-                            <p class="apple-caption2 text-muted">Zaman içinde puan değişimleri</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="apple-icon apple-icon-warning">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <div>
-                            <h5 class="apple-subheadline mb-1">Platform Comparison</h5>
-                            <p class="apple-caption2 text-muted">iOS vs Android karşılaştırması</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="apple-icon" style="background: var(--apple-purple);">
-                            <i class="fas fa-tags"></i>
-                        </div>
-                        <div>
-                            <h5 class="apple-subheadline mb-1">Topic Modeling</h5>
-                            <p class="apple-caption2 text-muted">Yorumlarda konu analizi</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="androidStats" class="text-sm text-gray-400">
+      <div class="animate-pulse space-y-2">
+        <div class="h-7 w-28 bg-white/5 rounded"></div>
+        <div class="h-4 w-40 bg-white/5 rounded"></div>
+      </div>
     </div>
-</div>
+  </div>
+</section>
 
-<!-- Usage Instructions -->
-<div class="apple-card mt-4">
-    <div class="apple-card-header">
-        <h3 class="apple-title3 mb-0">📚 Kullanım Talimatları</h3>
-    </div>
-    <div class="apple-card-body">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="text-center">
-                    <div class="apple-icon apple-icon-info mb-3" style="margin: 0 auto; width: 48px; height: 48px; font-size: 20px;">
-                        <i class="fas fa-cog"></i>
-                    </div>
-                    <h5 class="apple-subheadline mb-2">1. Konfigürasyon</h5>
-                    <p class="apple-caption2 text-muted">Zaman aralığı ve format seçin</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="text-center">
-                    <div class="apple-icon apple-icon-warning mb-3" style="margin: 0 auto; width: 48px; height: 48px; font-size: 20px;">
-                        <i class="fas fa-download"></i>
-                    </div>
-                    <h5 class="apple-subheadline mb-2">2. Export</h5>
-                    <p class="apple-caption2 text-muted">Verileri CSV/JSON olarak indirin</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="text-center">
-                    <div class="apple-icon apple-icon-success mb-3" style="margin: 0 auto; width: 48px; height: 48px; font-size: 20px;">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h5 class="apple-subheadline mb-2">3. Analiz</h5>
-                    <p class="apple-caption2 text-muted">Data science araçlarında analiz edin</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Aksiyon çubuğu -->
+<section class="flex flex-wrap items-center gap-3 mb-8">
+  <button id="refreshStatsBtn" type="button"
+    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-medium transition">
+    <i class="fa-solid fa-rotate"></i> İstatistikleri Yenile
+  </button>
+  <button id="sendSummaryBtn" type="button"
+    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition">
+    <i class="fa-solid fa-paper-plane"></i> Günlük Özeti Slack'e Gönder
+  </button>
+  <div class="flex-1"></div>
+  <button id="backfillBtn" type="button"
+    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-ink-950 text-sm font-semibold transition">
+    <i class="fa-solid fa-database"></i> Tüm Geçmişi İçeri Aktar
+  </button>
+</section>
 
+<!-- Kayıtlı yorumlar -->
+<section class="rounded-2xl border border-white/5 bg-ink-850 shadow-card overflow-hidden mb-8">
+  <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-white/5">
+    <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-comments text-brand-400"></i> Kayıtlı Yorumlar</h3>
+    <span id="reviewsTotal" class="text-xs text-gray-500"></span>
+  </div>
+
+  <!-- Filtreler -->
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 px-5 py-4 border-b border-white/5 bg-white/[0.02]">
+    <select id="filterPlatform" class="rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500">
+      <option value="">Tüm platformlar</option>
+      <option value="iOS">🍎 iOS</option>
+      <option value="Android">🤖 Android</option>
+    </select>
+    <select id="filterRating" class="rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500">
+      <option value="">Tüm puanlar</option>
+      <option value="5">★★★★★ (5)</option>
+      <option value="4">★★★★ (4)</option>
+      <option value="3">★★★ (3)</option>
+      <option value="2">★★ (2)</option>
+      <option value="1">★ (1)</option>
+    </select>
+    <div class="lg:col-span-2 relative">
+      <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+      <input id="filterSearch" type="text" placeholder="Yorum, başlık veya yazar ara..."
+        class="w-full pl-9 rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500">
+    </div>
+  </div>
+
+  <!-- Tablo -->
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left text-xs uppercase tracking-wider text-gray-500 border-b border-white/5">
+          <th class="px-5 py-3 font-medium">Platform</th>
+          <th class="px-5 py-3 font-medium">Puan</th>
+          <th class="px-5 py-3 font-medium">Yazar</th>
+          <th class="px-5 py-3 font-medium">Yorum</th>
+          <th class="px-5 py-3 font-medium whitespace-nowrap">Tarih</th>
+          <th class="px-5 py-3 font-medium text-center">Slack</th>
+        </tr>
+      </thead>
+      <tbody id="reviewsBody" class="divide-y divide-white/5">
+        <tr><td colspan="6" class="px-5 py-10 text-center text-gray-500">Yükleniyor...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Sayfalama -->
+  <div class="flex items-center justify-between gap-3 px-5 py-4 border-t border-white/5">
+    <button id="prevPage" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+      <i class="fa-solid fa-chevron-left text-xs"></i> Önceki
+    </button>
+    <span id="pageInfo" class="text-xs text-gray-500">—</span>
+    <button id="nextPage" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+      Sonraki <i class="fa-solid fa-chevron-right text-xs"></i>
+    </button>
+  </div>
+</section>
+
+<!-- Export -->
+<section class="rounded-2xl border border-white/5 bg-ink-850 shadow-card overflow-hidden">
+  <div class="px-5 py-4 border-b border-white/5">
+    <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-file-export text-brand-400"></i> Dışa Aktar</h3>
+    <p class="text-xs text-gray-500 mt-1">Analiz için CSV/JSON indir. Veriler veritabanından okunur, anında hazırlanır.</p>
+  </div>
+  <form id="exportForm" method="POST" action="{{ url_for('export_reviews') }}" class="p-5">
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium mb-1.5 text-gray-300">Zaman Aralığı</label>
+        <select name="time_period" required class="w-full rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500">
+          <option value="">Seçin...</option>
+          <option value="15_days">Son 15 Gün</option>
+          <option value="1_month">Son 1 Ay</option>
+          <option value="2_months">Son 2 Ay</option>
+          <option value="3_months">Son 3 Ay</option>
+          <option value="6_months">Son 6 Ay</option>
+          <option value="1_year">Son 1 Yıl</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1.5 text-gray-300">Format</label>
+        <select name="export_format" class="w-full rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500">
+          <option value="csv">CSV (Excel uyumlu)</option>
+          <option value="json">JSON (API uyumlu)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <label class="block text-sm font-medium mb-2 text-gray-300">Platform</label>
+      <div class="flex flex-wrap gap-3">
+        <label class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-ink-900 border border-white/10 cursor-pointer">
+          <input type="checkbox" name="platforms" value="app_store" checked class="rounded bg-ink-950 border-white/20 text-brand-500 focus:ring-brand-500">
+          <span class="text-sm">🍎 App Store</span>
+        </label>
+        <label class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-ink-900 border border-white/10 cursor-pointer">
+          <input type="checkbox" name="platforms" value="google_play" checked class="rounded bg-ink-950 border-white/20 text-brand-500 focus:ring-brand-500">
+          <span class="text-sm">🤖 Google Play</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="mt-5">
+      <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition">
+        <i class="fa-solid fa-download"></i> Export Başlat
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
 <script>
-document.getElementById('exportForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const timePeriod = formData.get('time_period');
-    
-    if (!timePeriod) {
-        alert('Lütfen zaman aralığı seçin');
-        return;
-    }
-    
-    // Show loading state
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Export Ediliyor...';
-    submitBtn.disabled = true;
-    
-    // Submit form
-    fetch(this.action, {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (response.ok) {
-            // Download file
-            return response.blob();
-        } else {
-            throw new Error('Export hatası');
-        }
-    })
-    .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `app_reviews_${timePeriod}_${new Date().toISOString().split('T')[0]}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        
-        alert('Export başarıyla tamamlandı!');
-    })
-    .catch(error => {
-        alert('Export hatası: ' + error.message);
-    })
-    .finally(() => {
-        // Reset button
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    });
+function escapeHtml(s){if(s==null)return '';return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmtNum(n){if(n===null||n===undefined)return '—';return Math.round(n).toLocaleString('tr-TR');}
+
+// ---- İstatistikler ----
+function statBlock(s, isAndroid){
+  if(!s){
+    return `<p class="text-gray-500">Henüz veri yok. <span class="text-brand-400">İstatistikleri Yenile</span>'ye basın.</p>`;
+  }
+  const avg = s.avg_rating ? Number(s.avg_rating).toFixed(2) : '—';
+  let html = `<div class="flex items-baseline gap-2">
+      <span class="text-3xl font-bold text-white">${avg}</span>
+      <span class="text-amber-400">★</span>
+      <span class="text-gray-500 text-sm">· ${fmtNum(s.rating_count)} oy</span>
+    </div>`;
+  if(!isAndroid && s.rank_position && s.rank_category){
+    html += `<div class="mt-2 inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-brand-500/10 text-brand-300 text-xs font-medium">
+        <i class="fa-solid fa-arrow-trend-up"></i> ${escapeHtml(s.rank_category)} — ${s.rank_position}. sırada
+      </div>`;
+  }
+  return html;
+}
+function loadStats(){
+  fetch("{{ url_for('api_stats') }}").then(r=>r.json()).then(d=>{
+    if(!d.success)return;
+    document.getElementById('iosStats').innerHTML = statBlock(d.ios, false);
+    document.getElementById('androidStats').innerHTML = statBlock(d.android, true);
+    if(d.ios?.captured_date) document.getElementById('iosUpdated').textContent = 'Güncelleme: '+d.ios.captured_date;
+    if(d.android?.captured_date) document.getElementById('androidUpdated').textContent = 'Güncelleme: '+d.android.captured_date;
+  }).catch(()=>{});
+}
+loadStats();
+
+document.getElementById('refreshStatsBtn').addEventListener('click', function(){
+  const o=this.innerHTML; this.disabled=true; this.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Yenileniyor';
+  fetch("{{ url_for('send_summary') }}",{method:'POST'}).then(()=>loadStats()).finally(()=>{this.disabled=false;this.innerHTML=o;});
+});
+document.getElementById('sendSummaryBtn').addEventListener('click', function(){
+  const o=this.innerHTML; this.disabled=true; this.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Gönderiliyor';
+  fetch("{{ url_for('send_summary') }}",{method:'POST'}).then(r=>r.json()).then(d=>{alert(d.message||(d.success?'Gönderildi':'Hata'));loadStats();})
+    .catch(e=>alert('Hata: '+e.message)).finally(()=>{this.disabled=false;this.innerHTML=o;});
+});
+
+// ---- Yorum tablosu ----
+let reviewsPage=1, searchTimer=null;
+function loadReviews(){
+  const platform=document.getElementById('filterPlatform').value;
+  const rating=document.getElementById('filterRating').value;
+  const search=document.getElementById('filterSearch').value.trim();
+  const p=new URLSearchParams({page:reviewsPage,per_page:25});
+  if(platform)p.set('platform',platform);
+  if(rating)p.set('rating',rating);
+  if(search)p.set('search',search);
+  const body=document.getElementById('reviewsBody');
+  body.innerHTML='<tr><td colspan="6" class="px-5 py-10 text-center text-gray-500"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>';
+  fetch("{{ url_for('api_reviews') }}?"+p.toString()).then(r=>r.json()).then(d=>{
+    if(!d.success){body.innerHTML=`<tr><td colspan="6" class="px-5 py-10 text-center text-red-400">Hata: ${escapeHtml(d.message)}</td></tr>`;return;}
+    document.getElementById('reviewsTotal').textContent=`${d.total.toLocaleString('tr-TR')} yorum`;
+    document.getElementById('pageInfo').textContent=`Sayfa ${d.page} / ${d.pages}`;
+    document.getElementById('prevPage').disabled=d.page<=1;
+    document.getElementById('nextPage').disabled=d.page>=d.pages;
+    if(!d.items.length){body.innerHTML='<tr><td colspan="6" class="px-5 py-10 text-center text-gray-500">Kayıt yok. "Tüm Geçmişi İçeri Aktar" ile doldurabilirsiniz.</td></tr>';return;}
+    body.innerHTML=d.items.map(r=>{
+      const isIos=r.platform==='iOS';
+      const badge=isIos
+        ? '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/5 text-xs"><i class="fa-brands fa-apple"></i> iOS</span>'
+        : (r.platform==='Android'
+          ? '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-brand-500/10 text-brand-300 text-xs"><i class="fa-brands fa-google-play"></i> Android</span>'
+          : '<span class="text-gray-600 text-xs">—</span>');
+      const rating=r.rating||0;
+      const stars=`<span class="text-amber-400">${'★'.repeat(rating)}</span><span class="text-gray-700">${'★'.repeat(5-rating)}</span>`;
+      const content=escapeHtml(r.content||'');
+      const short=content.length>160?content.slice(0,160)+'…':content;
+      const author=r.url?`<a href="${escapeHtml(r.url)}" target="_blank" rel="noopener" class="text-gray-300 hover:text-brand-400">${escapeHtml(r.author||'')}</a>`:escapeHtml(r.author||'');
+      const slack=r.sent_to_slack?'<i class="fa-solid fa-circle-check text-brand-500"></i>':'<span class="text-gray-700">—</span>';
+      return `<tr class="hover:bg-white/[0.02] align-top">
+        <td class="px-5 py-3">${badge}</td>
+        <td class="px-5 py-3 whitespace-nowrap" title="${rating}/5">${stars}</td>
+        <td class="px-5 py-3 whitespace-nowrap">${author}</td>
+        <td class="px-5 py-3 text-gray-300 max-w-md">${r.title?'<div class="font-medium text-white mb-0.5">'+escapeHtml(r.title)+'</div>':''}${short}</td>
+        <td class="px-5 py-3 text-gray-500 text-xs whitespace-nowrap">${escapeHtml(r.date||'')}</td>
+        <td class="px-5 py-3 text-center">${slack}</td>
+      </tr>`;
+    }).join('');
+  }).catch(e=>{body.innerHTML=`<tr><td colspan="6" class="px-5 py-10 text-center text-red-400">Hata: ${escapeHtml(e.message)}</td></tr>`;});
+}
+document.getElementById('filterPlatform').addEventListener('change',()=>{reviewsPage=1;loadReviews();});
+document.getElementById('filterRating').addEventListener('change',()=>{reviewsPage=1;loadReviews();});
+document.getElementById('filterSearch').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{reviewsPage=1;loadReviews();},400);});
+document.getElementById('prevPage').addEventListener('click',()=>{if(reviewsPage>1){reviewsPage--;loadReviews();}});
+document.getElementById('nextPage').addEventListener('click',()=>{reviewsPage++;loadReviews();});
+loadReviews();
+
+// ---- Backfill ----
+document.getElementById('backfillBtn').addEventListener('click', function(){
+  if(!confirm('Tüm geçmiş yorumlar veritabanına aktarılacak (Slack\'e gönderilmez). Birkaç dakika sürebilir. Devam edilsin mi?'))return;
+  const o=this.innerHTML; this.disabled=true; this.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Aktarılıyor, bekleyin...';
+  const fd=new FormData();
+  document.querySelectorAll('#exportForm input[name="platforms"]:checked').forEach(cb=>fd.append('platforms',cb.value));
+  if(![...fd.keys()].length){fd.append('platforms','app_store');fd.append('platforms','google_play');}
+  fetch("{{ url_for('backfill') }}",{method:'POST',body:fd}).then(r=>r.json()).then(d=>{
+    if(d.success){alert(`Tamamlandı: ${d.result.total} kayıt (iOS ${d.result.ios}, Android ${d.result.android})`);loadStats();reviewsPage=1;loadReviews();}
+    else alert('Hata: '+(d.message||'bilinmeyen'));
+  }).catch(e=>alert('Hata: '+e.message)).finally(()=>{this.disabled=false;this.innerHTML=o;});
+});
+
+// ---- Export ----
+document.getElementById('exportForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const fd=new FormData(this);
+  if(!fd.get('time_period')){alert('Lütfen zaman aralığı seçin');return;}
+  const btn=this.querySelector('button[type="submit"]'); const o=btn.innerHTML;
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Hazırlanıyor...'; btn.disabled=true;
+  fetch(this.action,{method:'POST',body:fd}).then(async r=>{
+    if(!r.ok){let m='Export hatası';try{const j=await r.json();if(j.message)m=j.message;}catch(_){}throw new Error(m);}
+    return r.blob();
+  }).then(blob=>{
+    const ext=fd.get('export_format')==='json'?'json':'csv';
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');
+    a.href=url;a.download=`app_reviews_${fd.get('time_period')}_${new Date().toISOString().split('T')[0]}.${ext}`;
+    document.body.appendChild(a);a.click();URL.revokeObjectURL(url);a.remove();
+  }).catch(err=>alert('Export hatası: '+err.message)).finally(()=>{btn.innerHTML=o;btn.disabled=false;});
 });
 </script>
 {% endblock %}

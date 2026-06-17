@@ -3,20 +3,25 @@
 {% block title %}Ayarlar - CmmntLnd{% endblock %}
 
 {% block content %}
-<h1 class="text-3xl font-bold mb-6">Ayarlar</h1>
-<form method="POST" class="space-y-8">
+<header class="mb-8">
+  <h1 class="text-3xl font-bold tracking-tight">Ayarlar</h1>
+  <p class="text-gray-400 mt-1">Uygulama kimlikleri, Slack ve izleme tercihleri.</p>
+</header>
+
+<form method="POST" class="space-y-5 max-w-4xl">
   <!-- Google Play -->
-  <div class="bg-gray-800 rounded-xl shadow p-6">
-    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><i class="fab fa-google-play text-green-500"></i> Google Play Store</h2>
-    <div class="grid md:grid-cols-2 gap-6">
+  <div class="rounded-2xl border border-white/5 bg-ink-850 shadow-card p-6">
+    <h2 class="text-lg font-semibold mb-5 flex items-center gap-2.5"><i class="fa-brands fa-google-play text-brand-400"></i> Google Play Store</h2>
+    <div class="grid md:grid-cols-2 gap-5">
       <div>
-        <label for="google_play_app_id" class="block text-sm font-medium mb-1">App ID</label>
-        <input id="google_play_app_id" name="google_play_app_id" value="{{ config.get('GOOGLE_PLAY_APP_ID','') }}" placeholder="com.whatsapp" type="text" class="w-full rounded-md bg-gray-900 border-gray-700 focus:border-emerald-500 focus:ring-emerald-500" />
-        <p class="text-xs text-gray-400 mt-1">Örnek: com.whatsapp, com.facebook, com.instagram</p>
+        <label for="google_play_app_id" class="block text-sm font-medium mb-1.5 text-gray-300">App ID</label>
+        <input id="google_play_app_id" name="google_play_app_id" value="{{ config.get('GOOGLE_PLAY_APP_ID','') }}" placeholder="com.whatsapp" type="text"
+          class="w-full rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500" />
+        <p class="text-xs text-gray-500 mt-1.5">Örnek: com.whatsapp, com.instagram</p>
       </div>
       <div>
-        <label for="google_play_country" class="block text-sm font-medium mb-1">Ülke</label>
-        <select id="google_play_country" name="google_play_country" class="w-full rounded-md bg-gray-900 border-gray-700 focus:border-emerald-500 focus:ring-emerald-500">
+        <label for="google_play_country" class="block text-sm font-medium mb-1.5 text-gray-300">Ülke</label>
+        <select id="google_play_country" name="google_play_country" class="w-full rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500">
           <option value="all" {{ 'selected' if config.get('GOOGLE_PLAY_COUNTRY')=='all' else '' }}>🌍 Tüm Ülkeler</option>
           <option value="tr" {{ 'selected' if config.get('GOOGLE_PLAY_COUNTRY')=='tr' else '' }}>🇹🇷 Türkiye</option>
           <option value="us" {{ 'selected' if config.get('GOOGLE_PLAY_COUNTRY')=='us' else '' }}>🇺🇸 ABD</option>
@@ -27,17 +32,18 @@
   </div>
 
   <!-- App Store -->
-  <div class="bg-gray-800 rounded-xl shadow p-6">
-    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><i class="fab fa-apple text-gray-300"></i> App Store</h2>
-    <div class="grid md:grid-cols-2 gap-6">
+  <div class="rounded-2xl border border-white/5 bg-ink-850 shadow-card p-6">
+    <h2 class="text-lg font-semibold mb-5 flex items-center gap-2.5"><i class="fa-brands fa-apple text-gray-200"></i> App Store</h2>
+    <div class="grid md:grid-cols-2 gap-5">
       <div>
-        <label for="app_store_app_id" class="block text-sm font-medium mb-1">App ID</label>
-        <input id="app_store_app_id" name="app_store_app_id" value="{{ config.get('APP_STORE_APP_ID','') }}" placeholder="310633997" type="text" class="w-full rounded-md bg-gray-900 border-gray-700 focus:border-emerald-500 focus:ring-emerald-500" />
-        <p class="text-xs text-gray-400 mt-1">Örnek: 310633997 (WhatsApp)</p>
+        <label for="app_store_app_id" class="block text-sm font-medium mb-1.5 text-gray-300">App ID</label>
+        <input id="app_store_app_id" name="app_store_app_id" value="{{ config.get('APP_STORE_APP_ID','') }}" placeholder="310633997" type="text"
+          class="w-full rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500" />
+        <p class="text-xs text-gray-500 mt-1.5">Örnek: 310633997 (WhatsApp)</p>
       </div>
       <div>
-        <label for="app_store_country" class="block text-sm font-medium mb-1">Ülke</label>
-        <select id="app_store_country" name="app_store_country" class="w-full rounded-md bg-gray-900 border-gray-700 focus:border-emerald-500 focus:ring-emerald-500">
+        <label for="app_store_country" class="block text-sm font-medium mb-1.5 text-gray-300">Ülke</label>
+        <select id="app_store_country" name="app_store_country" class="w-full rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500">
           <option value="all" {{ 'selected' if config.get('APP_STORE_COUNTRY')=='all' else '' }}>🌍 Tüm Ülkeler</option>
           <option value="tr" {{ 'selected' if config.get('APP_STORE_COUNTRY')=='tr' else '' }}>🇹🇷 Türkiye</option>
           <option value="us" {{ 'selected' if config.get('APP_STORE_COUNTRY')=='us' else '' }}>🇺🇸 ABD</option>
@@ -48,40 +54,42 @@
   </div>
 
   <!-- Slack -->
-  <div class="bg-gray-800 rounded-xl shadow p-6">
-    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><i class="fab fa-slack text-indigo-400"></i> Slack</h2>
-    <div class="grid md:grid-cols-2 gap-6">
+  <div class="rounded-2xl border border-white/5 bg-ink-850 shadow-card p-6">
+    <h2 class="text-lg font-semibold mb-5 flex items-center gap-2.5"><i class="fa-brands fa-slack text-indigo-400"></i> Slack</h2>
+    <div class="grid md:grid-cols-2 gap-5">
       <div class="md:col-span-2">
-        <label for="slack_webhook_url" class="block text-sm font-medium mb-1">Webhook URL</label>
-        <input id="slack_webhook_url" name="slack_webhook_url" value="{{ config.get('SLACK_WEBHOOK_URL','') }}" placeholder="https://hooks.slack.com/services/..." type="url" class="w-full rounded-md bg-gray-900 border-gray-700 focus:border-emerald-500 focus:ring-emerald-500" />
+        <label for="slack_webhook_url" class="block text-sm font-medium mb-1.5 text-gray-300">Webhook URL</label>
+        <input id="slack_webhook_url" name="slack_webhook_url" value="{{ config.get('SLACK_WEBHOOK_URL','') }}" placeholder="https://hooks.slack.com/services/..." type="url"
+          class="w-full rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500" />
       </div>
       <div>
-        <label for="slack_channel" class="block text-sm font-medium mb-1">Kanal</label>
-        <input id="slack_channel" name="slack_channel" value="{{ config.get('SLACK_CHANNEL','#app-reviews') }}" placeholder="#app-reviews" type="text" class="w-full rounded-md bg-gray-900 border-gray-700 focus:border-emerald-500 focus:ring-emerald-500" />
+        <label for="slack_channel" class="block text-sm font-medium mb-1.5 text-gray-300">Kanal</label>
+        <input id="slack_channel" name="slack_channel" value="{{ config.get('SLACK_CHANNEL','#app-reviews') }}" placeholder="#app-reviews" type="text"
+          class="w-full rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500" />
       </div>
       <div class="flex items-end">
-        <button type="button" onclick="testSlack()" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white">
+        <button type="button" onclick="testSlack()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition">
           <i class="fa-solid fa-paper-plane"></i> Test Et
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Monitor settings -->
-  <div class="bg-gray-800 rounded-xl shadow p-6">
-    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><i class="fa-solid fa-clock text-yellow-400"></i> İzleme</h2>
-    <div class="grid md:grid-cols-2 gap-6">
+  <!-- İzleme -->
+  <div class="rounded-2xl border border-white/5 bg-ink-850 shadow-card p-6">
+    <h2 class="text-lg font-semibold mb-5 flex items-center gap-2.5"><i class="fa-solid fa-clock text-amber-400"></i> İzleme</h2>
+    <div class="grid md:grid-cols-2 gap-5">
       <div>
-        <label for="check_interval" class="block text-sm font-medium mb-1">Kontrol Aralığı (dk)</label>
-        <select id="check_interval" name="check_interval" class="w-full rounded-md bg-gray-900 border-gray-700 focus:border-emerald-500 focus:ring-emerald-500">
-          {% for v,label in [('5','5'),('15','15'),('30','30'),('60','60')] %}
-          <option value="{{ v }}" {{ 'selected' if config.get('CHECK_INTERVAL_MINUTES')==v else '' }}>{{ label }} dk</option>
+        <label for="check_interval" class="block text-sm font-medium mb-1.5 text-gray-300">Kontrol Aralığı</label>
+        <select id="check_interval" name="check_interval" class="w-full rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500">
+          {% for v,label in [('5','5 dakika'),('15','15 dakika'),('30','30 dakika'),('60','60 dakika')] %}
+          <option value="{{ v }}" {{ 'selected' if config.get('CHECK_INTERVAL_MINUTES')==v else '' }}>{{ label }}</option>
           {% endfor %}
         </select>
       </div>
       <div>
-        <label for="max_reviews" class="block text-sm font-medium mb-1">Maksimum Yorum</label>
-        <select id="max_reviews" name="max_reviews" class="w-full rounded-md bg-gray-900 border-gray-700 focus:border-emerald-500 focus:ring-emerald-500">
+        <label for="max_reviews" class="block text-sm font-medium mb-1.5 text-gray-300">Tur Başına Maksimum Yorum</label>
+        <select id="max_reviews" name="max_reviews" class="w-full rounded-lg bg-ink-900 border-white/10 text-sm focus:border-brand-500 focus:ring-brand-500">
           {% for v in ['5','10','20','50'] %}
           <option value="{{ v }}" {{ 'selected' if config.get('MAX_REVIEWS_PER_CHECK')==v else '' }}>{{ v }}</option>
           {% endfor %}
@@ -90,17 +98,25 @@
     </div>
   </div>
 
-  <!-- Actions -->
-  <div class="flex justify-between flex-wrap gap-4">
-    <a href="{{ url_for('index') }}" class="inline-flex items-center gap-2 px-5 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
-    <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white"><i class="fa-solid fa-save"></i> Kaydet</button>
+  <!-- Aksiyonlar -->
+  <div class="flex items-center justify-between flex-wrap gap-3 pt-1">
+    <a href="{{ url_for('index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-medium transition">
+      <i class="fa-solid fa-arrow-left"></i> Ana Sayfa
+    </a>
+    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition">
+      <i class="fa-solid fa-floppy-disk"></i> Kaydet
+    </button>
   </div>
 </form>
-
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-function testSlack(){const url=document.getElementById('slack_webhook_url').value;if(!url){alert('Webhook URL girin');return;}const fd=new FormData();fd.append('webhook_url',url);fetch('/test_slack',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{alert(d.success?'✅ Başarılı':'❌ '+d.message)}).catch(e=>alert(e.message));}
+function testSlack(){
+  const url=document.getElementById('slack_webhook_url').value;
+  if(!url){alert('Önce Webhook URL girin');return;}
+  const fd=new FormData();fd.append('webhook_url',url);
+  fetch('/test_slack',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{alert(d.success?'✅ Başarılı — Slack\'i kontrol edin':'❌ '+d.message)}).catch(e=>alert(e.message));
+}
 </script>
 {% endblock %}
