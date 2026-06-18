@@ -1142,10 +1142,12 @@ class AppReviewMonitor:
         except Exception:
             prev = None
 
-        # Rating trendi (düne göre) — değişim olmasa bile göster
+        # Rating trendi (düne göre) — değişim olmasa bile göster.
+        # Trend, ekranda gösterilen 2 ondalıklı puanlara göre hesaplanır ki
+        # gösterim 4.53 -> 4.54 arttığında "sabit" değil artış görünsün.
         rating_trend = ""
         if prev and prev.get('avg_rating') is not None and isinstance(avg, (int, float)):
-            delta = round(avg - prev['avg_rating'], 2)
+            delta = round(round(avg, 2) - round(prev['avg_rating'], 2), 2)
             if delta > 0:
                 rating_trend = f"  (🟢 +{delta:.2f} vs dün)"
             elif delta < 0:
