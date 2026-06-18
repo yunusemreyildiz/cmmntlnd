@@ -1,6 +1,10 @@
 # 📱 CmmntLnd (CommentLand)
 
+> **App Store & Google Play review monitor that sends new app reviews to Slack in real time.** A self-hosted, open-source comment tracker / review tracker with a web UI — instant review notifications, daily rating summaries with trends, SQLite storage, and CSV/JSON export.
+
 App Store ve Google Play Store'daki uygulama yorumlarını otomatik olarak takip eden ve yeni yorumları Slack'e gönderen Python uygulaması.
+
+**Keywords:** app review monitor · app store reviews to slack · google play reviews to slack · comment tracker · review tracker · slack review notifications · app rating monitor · mobile app review alerts · store comment notifier · app-store-scraper · google-play-scraper · flask · python
 
 ## 📸 Ekran Görüntüleri
 
@@ -14,33 +18,20 @@ App Store ve Google Play Store'daki uygulama yorumlarını otomatik olarak takip
   <p><em>Ayarlar Sayfası - App ID'leri ve Slack webhook konfigürasyonu</em></p>
 </div>
 
-### 📸 Ekran Görüntüleri Nasıl Alınır?
-
-Ekran görüntülerini almak için:
-
-```bash
-# Demo verileri oluştur
-python3 demo_screenshots.py
-
-# Web UI'yi başlat
-python3 web_ui.py
-
-# Tarayıcıda http://localhost:5000 adresine git
-# Ekran görüntülerini al ve assets/screenshots/ klasörüne kaydet
-```
-
 ## ✨ Özellikler
 
 - 🍎 **App Store** yorumlarını takip eder
 - 🤖 **Google Play Store** yorumlarını takip eder
 - 💬 **Slack** entegrasyonu ile anlık bildirimler
+- 🗄️ **SQLite veritabanı** - Tüm yorumlar ve günlük istatistikler kalıcı olarak saklanır (tekrar bildirim gönderilmez)
+- 📅 **Günlük Slack özeti** - Her gün ortalama puan, oy sayısı ve düne göre değişim (🟢/🔴 trend)
 - 🌐 **Web UI** ile kolay yapılandırma
-- 🎨 **Modern arayüz** (Apple Design System benzeri)
+- 🎨 **Modern arayüz** (Tailwind CSS)
 - ⏰ **Otomatik** periyodik kontrol
 - 🌍 **Çoklu ülke** desteği
 - 📊 **Detaylı loglar** ve izleme
 - 📈 **Database Export** - Geçmiş yorumları CSV/JSON olarak export
-- 🔍 **Data Science Ready** - Analiz için optimize edilmiş veri yapısı
+- 🔍 **Filtrelenebilir yorum tablosu** - Platform, puan ve metne göre arama + sayfalama
 
 ## 🚀 Hızlı Başlangıç
 
@@ -103,6 +94,9 @@ GOOGLE_PLAY_COUNTRY=all
 # Monitor Configuration
 CHECK_INTERVAL_MINUTES=60
 MAX_REVIEWS_PER_CHECK=10
+
+# Günlük Slack özetinin gönderileceği saat (HH:MM, varsayılan 10:00)
+DAILY_SUMMARY_TIME=10:00
 ```
 
 ### App ID'leri Nasıl Bulunur?
@@ -148,6 +142,15 @@ http://localhost:5000
 ```bash
 python3 main.py
 ```
+
+### 📅 Günlük Slack Özeti
+
+Monitor çalışırken her gün belirlenen saatte (`DAILY_SUMMARY_TIME`, varsayılan 10:00) Slack'e otomatik bir özet gönderilir:
+
+- 🍎 iOS ve 🤖 Android için ortalama puan ve toplam oy sayısı
+- Bir önceki güne göre değişim göstergesi: 🟢 artış, 🔴 düşüş, ➡️ sabit
+
+Özet günde yalnızca bir kez gönderilir; aynı gün içinde tekrar gönderilmez (kayıt veritabanında tutulur). Database sayfasındaki **"Günlük Özeti Slack'e Gönder"** butonuyla manuel de tetiklenebilir.
 
 ### 📊 Database Export ile Kullanım
 
@@ -202,21 +205,27 @@ App Store,review_456,4,İyi,Genel olarak iyi,Mehmet,2024-01-14,1.2.3,https://...
 ## 📁 Proje Yapısı
 
 ```
-app-review-monitor/
-├── app_review_monitor.py    # Ana monitor sınıfı
-├── web_ui.py               # Web arayüzü
+cmmntlnd/
+├── app_review_monitor.py   # Ana monitor sınıfı (yorum çekme, Slack, istatistik)
+├── database.py             # SQLite katmanı (yorumlar + günlük istatistikler)
+├── web_ui.py               # Web arayüzü (Flask)
 ├── config.py               # Konfigürasyon yönetimi
 ├── main.py                 # Komut satırı giriş noktası
 ├── requirements.txt        # Python bağımlılıkları
-├── install.sh             # Linux/macOS kurulum scripti
-├── install.bat            # Windows kurulum scripti
-├── env_example.txt        # Örnek konfigürasyon
-├── templates/             # Web UI şablonları
-│   ├── base.html
-│   ├── index.html
-│   └── settings.html
-└── README.md              # Bu dosya
+├── install.sh              # Linux/macOS kurulum scripti
+├── install.bat             # Windows kurulum scripti
+├── env_example.txt         # Örnek konfigürasyon
+├── Dockerfile              # Docker imajı
+├── docker-compose.yml      # Docker Compose yapılandırması
+├── templates/              # Web UI şablonları (Tailwind CSS)
+│   ├── base_tw.html        # Ortak şablon
+│   ├── index.html          # Ana sayfa / monitor durumu
+│   ├── settings.html       # Ayarlar
+│   └── database.html       # Veritabanı: istatistikler, export, yorum tablosu
+└── README.md               # Bu dosya
 ```
+
+> Not: `reviews.db` (SQLite) ilk çalıştırmada otomatik oluşturulur ve `.gitignore` ile sürüm kontrolünün dışında tutulur.
 
 ## 🔧 Gelişmiş Ayarlar
 
@@ -248,8 +257,8 @@ docker run -p 5000:5000 -v $(pwd)/.env:/app/.env app-review-monitor
 
 - **Web UI**: `http://localhost:5000/logs` - Canlı logları görüntüle
 - **Dosya logları**: `logs/` dizininde saklanır
-- **Sent reviews**: `sent_reviews.json` - Gönderilen yorumların listesi
-- **Last check**: `last_check.json` - Son kontrol zamanları
+- **Veritabanı**: `reviews.db` (SQLite) - Tüm yorumlar, gönderim durumu ve günlük istatistikler burada saklanır
+- **Database sayfası**: `http://localhost:5000/database` - İstatistikleri, kayıtlı yorumları görüntüleme ve export
 
 ## 🚨 Sorun Giderme
 
@@ -280,8 +289,6 @@ docker run -p 5000:5000 -v $(pwd)/.env:/app/.env app-review-monitor
 # Debug modunda çalıştır
 FLASK_DEBUG=1 python3 web_ui.py
 ```
-
-## 🔧 Sorun Giderme
 
 ### Kurulum Sorunları
 
