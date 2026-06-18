@@ -2,48 +2,48 @@
 
 > **App Store & Google Play review monitor that sends new app reviews to Slack in real time.** A self-hosted, open-source comment tracker / review tracker with a web UI — instant review notifications, daily rating summaries with trends, SQLite storage, and CSV/JSON export.
 
-App Store ve Google Play Store'daki uygulama yorumlarını otomatik olarak takip eden ve yeni yorumları Slack'e gönderen Python uygulaması.
+CmmntLnd automatically tracks reviews from the Apple App Store and Google Play Store and posts new reviews to Slack as they arrive.
 
 **Keywords:** app review monitor · app store reviews to slack · google play reviews to slack · comment tracker · review tracker · slack review notifications · app rating monitor · mobile app review alerts · store comment notifier · app-store-scraper · google-play-scraper · flask · python
 
-## 📸 Ekran Görüntüleri
+## 📸 Screenshots
 
 <div align="center">
   <img src="assets/screenshots/dashboard.png" alt="Dashboard" width="800"/>
-  <p><em>Ana Dashboard - Monitor durumu ve platform bilgileri</em></p>
+  <p><em>Main dashboard — monitor status and platform info</em></p>
 </div>
 
 <div align="center">
   <img src="assets/screenshots/settings.png" alt="Settings" width="800"/>
-  <p><em>Ayarlar Sayfası - App ID'leri ve Slack webhook konfigürasyonu</em></p>
+  <p><em>Settings page — app IDs and Slack webhook configuration</em></p>
 </div>
 
-## ✨ Özellikler
+## ✨ Features
 
-- 🍎 **App Store** yorumlarını takip eder
-- 🤖 **Google Play Store** yorumlarını takip eder
-- 💬 **Slack** entegrasyonu ile anlık bildirimler
-- 🗄️ **SQLite veritabanı** - Tüm yorumlar ve günlük istatistikler kalıcı olarak saklanır (tekrar bildirim gönderilmez)
-- 📅 **Günlük Slack özeti** - Her gün ortalama puan, oy sayısı ve düne göre değişim (🟢/🔴 trend)
-- 🌐 **Web UI** ile kolay yapılandırma
-- 🎨 **Modern arayüz** (Tailwind CSS)
-- ⏰ **Otomatik** periyodik kontrol
-- 🌍 **Çoklu ülke** desteği
-- 📊 **Detaylı loglar** ve izleme
-- 📈 **Database Export** - Geçmiş yorumları CSV/JSON olarak export
-- 🔍 **Filtrelenebilir yorum tablosu** - Platform, puan ve metne göre arama + sayfalama
+- 🍎 Tracks **App Store** reviews
+- 🤖 Tracks **Google Play Store** reviews
+- 💬 **Slack** integration for instant notifications
+- 🗄️ **SQLite database** — all reviews and daily stats are stored persistently (no duplicate notifications)
+- 📅 **Daily Slack summary** — average rating, vote count, and day-over-day change (🟢/🔴 trend) every day
+- 🌐 **Web UI** for easy configuration
+- 🎨 **Modern interface** (Tailwind CSS)
+- ⏰ **Automatic** periodic checks
+- 🌍 **Multi-country** support
+- 📊 **Detailed logs** and monitoring
+- 📈 **Database export** — export historical reviews as CSV/JSON
+- 🔍 **Filterable review table** — search by platform, rating, and text + pagination
 
-## 🚀 Hızlı Başlangıç
+## 🚀 Quick Start
 
-### Gereksinimler
+### Requirements
 
 - Python 3.8+
 - pip3
-- Slack Webhook URL
+- A Slack Webhook URL
 
-### Kurulum
+### Installation
 
-#### Otomatik Kurulum (Önerilen)
+#### Automatic Installation (Recommended)
 
 **Linux/macOS:**
 ```bash
@@ -59,24 +59,23 @@ cd cmmntlnd
 install.bat
 ```
 
-#### Manuel Kurulum
+#### Manual Installation
 
-1. **Bağımlılıkları yükleyin:**
+1. **Install dependencies:**
 ```bash
 pip3 install -r requirements.txt
 ```
 
-2. **Konfigürasyon dosyasını oluşturun:**
+2. **Create the configuration file:**
 ```bash
 cp env_example.txt .env
 ```
 
-3. **Ayarlarınızı düzenleyin:**
-`.env` dosyasını açın ve gerekli bilgileri girin.
+3. **Edit your settings:** open `.env` and fill in the required values.
 
-## ⚙️ Konfigürasyon
+## ⚙️ Configuration
 
-### .env Dosyası Ayarları
+### .env Settings
 
 ```env
 # Slack Configuration
@@ -95,217 +94,217 @@ GOOGLE_PLAY_COUNTRY=all
 CHECK_INTERVAL_MINUTES=60
 MAX_REVIEWS_PER_CHECK=10
 
-# Günlük Slack özetinin gönderileceği saat (HH:MM, varsayılan 10:00)
+# Time of day to send the daily Slack summary (HH:MM, default 10:00)
 DAILY_SUMMARY_TIME=10:00
 ```
 
-### App ID'leri Nasıl Bulunur?
+### How to Find App IDs
 
 #### App Store App ID
-1. App Store'da uygulamanızı bulun
-2. URL'deki sayıyı kopyalayın: `https://apps.apple.com/app/whatsapp-messenger/id310633997`
-3. `310633997` kısmını kullanın (WhatsApp'ın App Store ID'si)
+1. Find your app on the App Store
+2. Copy the number from the URL: `https://apps.apple.com/app/whatsapp-messenger/id310633997`
+3. Use the `310633997` part (WhatsApp's App Store ID)
 
 #### Google Play App ID
-1. Google Play Store'da uygulamanızı bulun
-2. URL'deki paket adını kopyalayın: `https://play.google.com/store/apps/details?id=com.whatsapp`
-3. `com.whatsapp` kısmını kullanın (WhatsApp'ın Google Play ID'si)
+1. Find your app on the Google Play Store
+2. Copy the package name from the URL: `https://play.google.com/store/apps/details?id=com.whatsapp`
+3. Use the `com.whatsapp` part (WhatsApp's Google Play ID)
 
-### Slack Webhook Nasıl Oluşturulur?
+### How to Create a Slack Webhook
 
-1. Slack workspace'inizde bir kanal oluşturun
-2. [Slack API](https://api.slack.com/messaging/webhooks) sayfasına gidin
-3. "Create Webhook" butonuna tıklayın
-4. Kanalı seçin ve webhook URL'ini kopyalayın
+1. Create a channel in your Slack workspace
+2. Go to the [Slack API](https://api.slack.com/messaging/webhooks) page
+3. Click "Create Webhook"
+4. Select the channel and copy the webhook URL
 
-## 🖥️ Kullanım
+## 🖥️ Usage
 
-### Web UI ile Kullanım (Önerilen)
+### Using the Web UI (Recommended)
 
-1. **Web UI'yi başlatın:**
+1. **Start the Web UI:**
 ```bash
 python3 web_ui.py
 ```
 
-2. **Tarayıcınızda açın:**
+2. **Open it in your browser:**
 ```
 http://localhost:5000
 ```
 
-3. **Ayarlarınızı yapın:**
-   - Settings sayfasından gerekli bilgileri girin
-   - Slack webhook'unuzu test edin
-   - Monitor'u başlatın
+3. **Configure:**
+   - Enter the required values on the Settings page
+   - Test your Slack webhook
+   - Start the monitor
 
-### Komut Satırı ile Kullanım
+### Using the Command Line
 
 ```bash
 python3 main.py
 ```
 
-### 📅 Günlük Slack Özeti
+### 📅 Daily Slack Summary
 
-Monitor çalışırken her gün belirlenen saatte (`DAILY_SUMMARY_TIME`, varsayılan 10:00) Slack'e otomatik bir özet gönderilir:
+While the monitor is running, a summary is automatically posted to Slack every day at the configured time (`DAILY_SUMMARY_TIME`, default 10:00):
 
-- 🍎 iOS ve 🤖 Android için ortalama puan ve toplam oy sayısı
-- Bir önceki güne göre değişim göstergesi: 🟢 artış, 🔴 düşüş, ➡️ sabit
+- Average rating and total vote count for 🍎 iOS and 🤖 Android
+- Day-over-day change indicator: 🟢 up, 🔴 down, ➡️ unchanged
 
-Özet günde yalnızca bir kez gönderilir; aynı gün içinde tekrar gönderilmez (kayıt veritabanında tutulur). Database sayfasındaki **"Günlük Özeti Slack'e Gönder"** butonuyla manuel de tetiklenebilir.
+The summary is sent only once per day (the state is tracked in the database, so it is never sent twice on the same day). It can also be triggered manually with the **"Send Daily Summary to Slack"** button on the Database page.
 
-### 📊 Database Export ile Kullanım
+### 📊 Database Export
 
-1. **Database sayfasına gidin:**
+1. **Go to the Database page:**
 ```
 http://localhost:5000/database
 ```
 
-2. **Zaman aralığı seçin:**
-   - Son 15 gün
-   - Son 1 ay
-   - Son 2 ay
-   - Son 3 ay
-   - Son 6 ay
-   - Son 1 yıl
+2. **Pick a time range:**
+   - Last 15 days
+   - Last 1 month
+   - Last 2 months
+   - Last 3 months
+   - Last 6 months
+   - Last 1 year
 
-3. **Export formatını seçin:**
-   - CSV (Excel uyumlu)
-   - JSON (API uyumlu)
+3. **Choose an export format:**
+   - CSV (Excel-friendly)
+   - JSON (API-friendly)
 
-4. **Platform seçimi:**
+4. **Select platforms:**
    - iOS (App Store)
    - Android (Google Play)
-   - Her ikisi
+   - Both
 
-5. **Export butonuna tıklayın** ve dosyayı indirin
+5. **Click Export** and download the file
 
-#### 📈 Data Science Analizi İçin CSV Yapısı
+#### 📈 CSV Structure for Data Analysis
 
 ```csv
 Platform,Review ID,Rating,Title,Content,Author,Date,Version,URL,Country
-Google Play,review_123,5,Harika uygulama,Çok beğendim,Ahmet,2024-01-15,1.2.3,https://...,tr
-App Store,review_456,4,İyi,Genel olarak iyi,Mehmet,2024-01-14,1.2.3,https://...,tr
+Google Play,review_123,5,Great app,Loved it,Ahmet,2024-01-15,1.2.3,https://...,tr
+App Store,review_456,4,Good,Generally good,Mehmet,2024-01-14,1.2.3,https://...,tr
 ```
 
-#### 🔍 Analiz İmkanları
+#### 🔍 Analysis Possibilities
 
-- **Sentiment Analysis**: Yorum metinlerinde duygu analizi
-- **Rating Trends**: Zaman içinde puan değişimleri
-- **Platform Comparison**: iOS vs Android karşılaştırması
-- **Topic Modeling**: Yorumlarda konu analizi
-- **Version Analysis**: App versiyonlarına göre geri bildirim analizi
+- **Sentiment Analysis**: emotion analysis on review text
+- **Rating Trends**: rating changes over time
+- **Platform Comparison**: iOS vs Android
+- **Topic Modeling**: topic analysis across reviews
+- **Version Analysis**: feedback broken down by app version
 
-#### 📊 Platform Kapasitesi
+#### 📊 Platform Capacity
 
-- **Google Play**: Pagination ile 2000+ yorum çekilebilir (500 yorum/sayfa)
-- **App Store**: Pagination ile 1000+ yorum çekilebilir (50 yorum/sayfa)
-- **Pagination**: Her iki platformda da sayfa sayfa geriye giderek belirtilen tarihe kadar yorum
-- **Rate Limiting**: Platform limitlerini aşmamak için sayfa başına 1-2 saniye bekleme
-- **Tarih Doğruluğu**: Seçilen zaman aralığına tam olarak uygun veri çekimi
+- **Google Play**: 2000+ reviews via pagination (500 reviews/page)
+- **App Store**: 1000+ reviews via pagination (50 reviews/page)
+- **Pagination**: both platforms page backwards until the requested date
+- **Rate Limiting**: 1–2 seconds wait per page to stay within platform limits
+- **Date Accuracy**: data fetched precisely for the selected time range
 
-## 📁 Proje Yapısı
+## 📁 Project Structure
 
 ```
 cmmntlnd/
-├── app_review_monitor.py   # Ana monitor sınıfı (yorum çekme, Slack, istatistik)
-├── database.py             # SQLite katmanı (yorumlar + günlük istatistikler)
-├── web_ui.py               # Web arayüzü (Flask)
-├── config.py               # Konfigürasyon yönetimi
-├── main.py                 # Komut satırı giriş noktası
-├── requirements.txt        # Python bağımlılıkları
-├── install.sh              # Linux/macOS kurulum scripti
-├── install.bat             # Windows kurulum scripti
-├── env_example.txt         # Örnek konfigürasyon
-├── Dockerfile              # Docker imajı
-├── docker-compose.yml      # Docker Compose yapılandırması
-├── templates/              # Web UI şablonları (Tailwind CSS)
-│   ├── base_tw.html        # Ortak şablon
-│   ├── index.html          # Ana sayfa / monitor durumu
-│   ├── settings.html       # Ayarlar
-│   └── database.html       # Veritabanı: istatistikler, export, yorum tablosu
-└── README.md               # Bu dosya
+├── app_review_monitor.py   # Core monitor class (review fetching, Slack, stats)
+├── database.py             # SQLite layer (reviews + daily stats)
+├── web_ui.py               # Web interface (Flask)
+├── config.py               # Configuration management
+├── main.py                 # Command-line entry point
+├── requirements.txt        # Python dependencies
+├── install.sh              # Linux/macOS install script
+├── install.bat             # Windows install script
+├── env_example.txt         # Example configuration
+├── Dockerfile              # Docker image
+├── docker-compose.yml      # Docker Compose configuration
+├── templates/              # Web UI templates (Tailwind CSS)
+│   ├── base_tw.html        # Shared layout
+│   ├── index.html          # Home / monitor status
+│   ├── settings.html       # Settings
+│   └── database.html       # Database: stats, export, review table
+└── README.md               # This file
 ```
 
-> Not: `reviews.db` (SQLite) ilk çalıştırmada otomatik oluşturulur ve `.gitignore` ile sürüm kontrolünün dışında tutulur.
+> Note: `reviews.db` (SQLite) is created automatically on first run and is kept out of version control via `.gitignore`.
 
-## 🔧 Gelişmiş Ayarlar
+## 🔧 Advanced Settings
 
-### Kontrol Aralığı
-- `CHECK_INTERVAL_MINUTES`: Dakika cinsinden kontrol aralığı (1-1440)
-- Varsayılan: 60 dakika
+### Check Interval
+- `CHECK_INTERVAL_MINUTES`: check interval in minutes (1–1440)
+- Default: 60 minutes
 
-### Maksimum Yorum Sayısı
-- `MAX_REVIEWS_PER_CHECK`: Her kontrol sırasında işlenecek maksimum yorum sayısı (1-100)
-- Varsayılan: 10 yorum
+### Maximum Reviews
+- `MAX_REVIEWS_PER_CHECK`: maximum reviews processed per check (1–100)
+- Default: 10 reviews
 
-### Ülke Seçimi
-- `all`: Tüm ülkelerden yorumları alır
-- `tr`: Sadece Türkiye'den yorumları alır
-- `us`: Sadece ABD'den yorumları alır
-- `gb`: Sadece İngiltere'den yorumları alır
+### Country Selection
+- `all`: reviews from all countries
+- `tr`: reviews from Turkey only
+- `us`: reviews from the US only
+- `gb`: reviews from the UK only
 
-## 🐳 Docker ile Kullanım
+## 🐳 Using Docker
 
 ```bash
-# Docker image oluştur
+# Build the Docker image
 docker build -t app-review-monitor .
 
-# Container çalıştır
+# Run the container
 docker run -p 5000:5000 -v $(pwd)/.env:/app/.env app-review-monitor
 ```
 
-## 📊 Loglar ve İzleme
+## 📊 Logs & Monitoring
 
-- **Web UI**: `http://localhost:5000/logs` - Canlı logları görüntüle
-- **Dosya logları**: `logs/` dizininde saklanır
-- **Veritabanı**: `reviews.db` (SQLite) - Tüm yorumlar, gönderim durumu ve günlük istatistikler burada saklanır
-- **Database sayfası**: `http://localhost:5000/database` - İstatistikleri, kayıtlı yorumları görüntüleme ve export
+- **Web UI**: `http://localhost:5000/logs` — view live logs
+- **File logs**: stored in the `logs/` directory
+- **Database**: `reviews.db` (SQLite) — all reviews, send status, and daily stats are stored here
+- **Database page**: `http://localhost:5000/database` — view stats, browse stored reviews, and export
 
-## 🚨 Sorun Giderme
+## 🚨 Troubleshooting
 
-### Yaygın Sorunlar
+### Common Issues
 
-1. **"Module not found" hatası:**
+1. **"Module not found" error:**
    ```bash
    pip3 install -r requirements.txt
    ```
 
-2. **Slack webhook çalışmıyor:**
-   - Webhook URL'ini kontrol edin
-   - Slack kanalının var olduğundan emin olun
-   - Webhook'un aktif olduğunu kontrol edin
+2. **Slack webhook not working:**
+   - Check the webhook URL
+   - Make sure the Slack channel exists
+   - Verify the webhook is active
 
-3. **App ID bulunamıyor:**
-   - App Store/Google Play'de uygulamanın yayında olduğundan emin olun
-   - App ID'lerin doğru olduğunu kontrol edin
+3. **App ID not found:**
+   - Make sure the app is published on the App Store/Google Play
+   - Verify the app IDs are correct
 
-4. **Yorumlar gelmiyor:**
-   - İnternet bağlantınızı kontrol edin
-   - App Store/Google Play API limitlerini kontrol edin
-   - Logları inceleyin
+4. **No reviews coming in:**
+   - Check your internet connection
+   - Check App Store/Google Play API limits
+   - Inspect the logs
 
-### Debug Modu
+### Debug Mode
 
 ```bash
-# Debug modunda çalıştır
+# Run in debug mode
 FLASK_DEBUG=1 python3 web_ui.py
 ```
 
-### Kurulum Sorunları
+### Installation Issues
 
-#### Dependency Conflict Hatası
-Eğer `ResolutionImpossible` hatası alıyorsanız:
+#### Dependency Conflict Error
+If you get a `ResolutionImpossible` error:
 
 ```bash
-# Sanal ortam oluşturun
+# Create a virtual environment
 python3 -m venv venv
 source venv/bin/activate  # Linux/macOS
-# veya
+# or
 venv\Scripts\activate.bat  # Windows
 
-# pip'i güncelleyin
+# Upgrade pip
 pip install --upgrade pip
 
-# Bağımlılıkları tek tek yükleyin
+# Install dependencies one by one
 pip install requests>=2.23.0,<3.0.0
 pip install python-dotenv
 pip install flask
@@ -314,59 +313,59 @@ pip install app-store-scraper
 pip install slack-sdk
 ```
 
-#### Python Versiyonu Sorunları
-Python 3.8+ gereklidir:
+#### Python Version Issues
+Python 3.8+ is required:
 ```bash
-python3 --version  # 3.8+ olmalı
+python3 --version  # must be 3.8+
 ```
 
-#### macOS ARM64 Sorunları
-Apple Silicon Mac'lerde:
+#### macOS ARM64 Issues
+On Apple Silicon Macs:
 ```bash
-# Homebrew ile Python yükleyin
+# Install Python with Homebrew
 brew install python@3.11
 python3.11 -m venv venv
 source venv/bin/activate
 ```
 
-### Çalışma Sorunları
+### Runtime Issues
 
-#### Monitor Başlamıyor
-- `.env` dosyasının doğru yapılandırıldığından emin olun
-- Slack webhook URL'sinin geçerli olduğunu kontrol edin
-- App ID'lerin doğru olduğunu doğrulayın
+#### Monitor Won't Start
+- Make sure `.env` is configured correctly
+- Verify the Slack webhook URL is valid
+- Confirm the app IDs are correct
 
-#### Slack Mesajları Gelmiyor
-- Webhook URL'sini test edin
-- Kanal adının doğru olduğunu kontrol edin
-- Slack workspace'inizde bot izinlerini kontrol edin
+#### Slack Messages Not Arriving
+- Test the webhook URL
+- Check that the channel name is correct
+- Check bot permissions in your Slack workspace
 
-## 🤝 Katkıda Bulunma
+## 🤝 Contributing
 
-1. Fork yapın
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit yapın (`git commit -m 'Add amazing feature'`)
-4. Push yapın (`git push origin feature/amazing-feature`)
-5. Pull Request oluşturun
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📝 Lisans
+## 📝 License
 
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-## 🙏 Teşekkürler
+## 🙏 Acknowledgements
 
-- [google-play-scraper](https://github.com/JoMingyu/google-play-scraper) - Google Play Store scraping
-- [app-store-scraper](https://github.com/cowboy-bebug/app-store-scraper) - App Store scraping
-- [Flask](https://flask.palletsprojects.com/) - Web framework
-- [Slack API](https://api.slack.com/) - Slack entegrasyonu
+- [google-play-scraper](https://github.com/JoMingyu/google-play-scraper) — Google Play Store scraping
+- [app-store-scraper](https://github.com/cowboy-bebug/app-store-scraper) — App Store scraping
+- [Flask](https://flask.palletsprojects.com/) — web framework
+- [Slack API](https://api.slack.com/) — Slack integration
 
-## 📞 Destek
+## 📞 Support
 
-Sorunlarınız için:
-- GitHub Issues açın
-- Dokümantasyonu kontrol edin
-- Logları inceleyin
+For issues:
+- Open a GitHub Issue
+- Check the documentation
+- Inspect the logs
 
 ---
 
-**⭐ Bu projeyi beğendiyseniz yıldız vermeyi unutmayın!**
+**⭐ If you like this project, don't forget to give it a star!**
